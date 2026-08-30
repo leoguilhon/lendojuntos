@@ -7,7 +7,7 @@ A primeira semana foi organizada em duas partes para separar as decisões de pro
 | Parte | Entrega | Situação |
 | --- | --- | --- |
 | 1 | Alinhamento da continuidade do LendoJuntos como intervenção; delimitação do público, das barreiras e do impacto social | Concluída neste documento |
-| 2 | Estudo de acessibilidade digital e da WCAG 2.2 nos níveis A e AA | Pendente |
+| 2 | Estudo de acessibilidade digital e da WCAG 2.2 nos níveis A e AA | Concluída em [Semana 1 — Parte 2](semana-01-parte-2-wcag.md) |
 
 ## Decisão de continuidade
 
@@ -124,4 +124,4 @@ Esta parte é considerada concluída com:
 - impacto social traduzido em resultados e indicadores iniciais;
 - limites, premissas e pontos que ainda exigem validação identificados.
 
-A Parte 2 deverá transformar o estudo de acessibilidade digital e WCAG 2.2 A/AA em um referencial aplicável ao LendoJuntos, preservando a distinção entre conformidade técnica, usabilidade e impacto social.
+A Parte 2 transformou o estudo de acessibilidade digital e WCAG 2.2 A/AA em um [referencial aplicável ao LendoJuntos](semana-01-parte-2-wcag.md), preservando a distinção entre conformidade técnica, usabilidade e impacto social. Com as duas partes concluídas, o projeto encerra a primeira semana com o termo de escopo, o fichamento e a matriz WCAG v1 previstos no cronograma.

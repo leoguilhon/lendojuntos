@@ -129,6 +129,7 @@ python -m py_compile app\main.py
 - Cronograma academico: `docs/academico/`
 - Artefatos de modelagem: `docs/artefatos-modelagem/`
 - Semana 1, parte 1 — continuidade da intervencao, publico, barreiras e impacto social: [docs/semana-01-parte-1-intervencao.md](docs/semana-01-parte-1-intervencao.md)
+- Semana 1, parte 2 — acessibilidade digital e matriz WCAG 2.2 A/AA: [docs/semana-01-parte-2-wcag.md](docs/semana-01-parte-2-wcag.md)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP
