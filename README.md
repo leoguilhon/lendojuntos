@@ -130,6 +130,9 @@ python -m py_compile app\main.py
 - Artefatos de modelagem: `docs/artefatos-modelagem/`
 - Semana 1, parte 1 — continuidade da intervencao, publico, barreiras e impacto social: [docs/semana-01-parte-1-intervencao.md](docs/semana-01-parte-1-intervencao.md)
 - Semana 1, parte 2 — acessibilidade digital e matriz WCAG 2.2 A/AA: [docs/semana-01-parte-2-wcag.md](docs/semana-01-parte-2-wcag.md)
+- Semana 2 — checklist eMAG 3.1 aplicado ao produto: [docs/semana-02-checklist-emag.md](docs/semana-02-checklist-emag.md)
+- Semana 2 — experimentos com teclado, NVDA, zoom/reflow e alto contraste: [docs/semana-02-notas-tecnologias-assistivas.md](docs/semana-02-notas-tecnologias-assistivas.md)
+- Semana 2 — inventário de telas, estados e fluxos críticos: [docs/semana-02-inventario-telas-fluxos.md](docs/semana-02-inventario-telas-fluxos.md)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP
