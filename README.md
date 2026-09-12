@@ -133,6 +133,8 @@ python -m py_compile app\main.py
 - Semana 2 — checklist eMAG 3.1 aplicado ao produto: [docs/semana-02-checklist-emag.md](docs/semana-02-checklist-emag.md)
 - Semana 2 — experimentos com teclado, NVDA, zoom/reflow e alto contraste: [docs/semana-02-notas-tecnologias-assistivas.md](docs/semana-02-notas-tecnologias-assistivas.md)
 - Semana 2 — inventário de telas, estados e fluxos críticos: [docs/semana-02-inventario-telas-fluxos.md](docs/semana-02-inventario-telas-fluxos.md)
+- Semana 3 — relatório inicial da auditoria de acessibilidade: [docs/semana-03-relatorio-inicial-auditoria.md](docs/semana-03-relatorio-inicial-auditoria.md)
+- Semana 3 — backlog priorizado de acessibilidade: [docs/semana-03-backlog-priorizado-acessibilidade.md](docs/semana-03-backlog-priorizado-acessibilidade.md)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP
