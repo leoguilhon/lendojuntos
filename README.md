@@ -135,6 +135,9 @@ python -m py_compile app\main.py
 - Semana 2 — inventário de telas, estados e fluxos críticos: [docs/semana-02-inventario-telas-fluxos.md](docs/semana-02-inventario-telas-fluxos.md)
 - Semana 3 — relatório inicial da auditoria de acessibilidade: [docs/semana-03-relatorio-inicial-auditoria.md](docs/semana-03-relatorio-inicial-auditoria.md)
 - Semana 3 — backlog priorizado de acessibilidade: [docs/semana-03-backlog-priorizado-acessibilidade.md](docs/semana-03-backlog-priorizado-acessibilidade.md)
+- Semana 4 — plano técnico de acessibilidade: [docs/semana-04-plano-tecnico-acessibilidade.md](docs/semana-04-plano-tecnico-acessibilidade.md)
+- Semana 4 — metodologia de testes de acessibilidade: [docs/semana-04-metodologia-testes-acessibilidade.md](docs/semana-04-metodologia-testes-acessibilidade.md)
+- Semana 4 — matriz de ferramentas de acessibilidade: [docs/semana-04-matriz-ferramentas-acessibilidade.md](docs/semana-04-matriz-ferramentas-acessibilidade.md)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP
