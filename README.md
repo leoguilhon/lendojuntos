@@ -138,6 +138,8 @@ python -m py_compile app\main.py
 - Semana 4 — plano técnico de acessibilidade: [docs/semana-04-plano-tecnico-acessibilidade.md](docs/semana-04-plano-tecnico-acessibilidade.md)
 - Semana 4 — metodologia de testes de acessibilidade: [docs/semana-04-metodologia-testes-acessibilidade.md](docs/semana-04-metodologia-testes-acessibilidade.md)
 - Semana 4 — matriz de ferramentas de acessibilidade: [docs/semana-04-matriz-ferramentas-acessibilidade.md](docs/semana-04-matriz-ferramentas-acessibilidade.md)
+- Semana 5 — wireframes acessíveis de baixa fidelidade: [docs/semana-05-wireframes-acessiveis.md](docs/semana-05-wireframes-acessiveis.md)
+- Semana 5 — fluxos acessíveis anotados: [docs/semana-05-fluxos-anotados.md](docs/semana-05-fluxos-anotados.md)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP
