@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Torto Arado — LendoJuntos</title>
+    <link rel="icon" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="prototype.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+    <header class="topbar"><a class="brand" href="index.html" data-route><img src="../../frontend/public/images/logo-mark.png" alt="" /><span><strong>LendoJuntos</strong><small>clubes com memória</small></span></a><nav class="topnav" aria-label="Navegação principal"><a href="index.html" aria-current="page" data-route>Clubes</a><a href="perfil.html" data-route>Perfil</a></nav><div class="header-actions"><span class="user-badge"><span>Leitor atual</span><strong>Leonardo</strong></span><a class="button secondary" href="login.html" data-route>Sair</a></div></header>
+    <main class="shell narrow" id="conteudo-principal" tabindex="-1">
+      <header class="page-heading"><div><p class="eyebrow">Leitura atual</p><h1 data-route-title>Torto Arado</h1><p>Itamar Vieira Junior</p></div><div class="inline-actions"><button class="secondary" type="button" aria-pressed="true" data-toggle data-on-label="Remover curtida" data-off-label="Curtir livro" data-on-message="Livro curtido." data-off-message="Curtida removida.">Remover curtida</button><a class="button secondary" href="clube.html" data-route>Voltar ao clube</a></div></header>
+      <p class="status-message" role="status" aria-live="polite" data-status></p>
+      <div class="stack">
+        <section class="panel accent" aria-labelledby="detalhes-leitura"><h2 id="detalhes-leitura">Detalhes da leitura</h2><p>Nas profundezas do sertão baiano, duas irmãs encontram uma antiga faca e passam a compartilhar um segredo.</p><fieldset><legend>Situação da leitura</legend><div class="segmented-control" data-segmented><button class="secondary" type="button" aria-pressed="false" data-segment-value="Planejado">Planejado</button><button type="button" aria-pressed="true" data-segment-value="Em leitura">Em leitura — selecionado</button><button class="secondary" type="button" aria-pressed="false" data-segment-value="Concluído">Concluído</button></div></fieldset></section>
+        <section class="panel" aria-labelledby="encontros-relacionados"><div class="section-heading"><h2 id="encontros-relacionados">Encontros relacionados</h2><a href="encontros.html" data-route>Ver todos</a></div><ul class="card-list"><li><article class="card"><div><h3><a href="encontro.html" data-route>Capítulos 8 a 14</a></h3><p>10/10/2026, às 19h30 — Biblioteca Central</p></div></article></li></ul></section>
+        <section class="panel" aria-labelledby="comentarios-livro"><div class="section-heading"><div><h2 id="comentarios-livro">Comentários do livro</h2><p>2 comentários</p></div></div><div class="stack"><article class="comment"><p class="comment-meta"><strong>Ana Souza</strong><time datetime="2026-09-28T20:10">28/09/2026, 20h10</time></p><p>A relação das irmãs com a terra mudou minha leitura do primeiro capítulo.</p></article><article class="comment"><p class="comment-meta"><strong>Leonardo</strong><time datetime="2026-09-30T18:45">30/09/2026, 18h45</time></p><p>Quero retomar a passagem sobre memória no próximo encontro.</p></article><form data-review-form="revisar-comentario"><div class="field"><label for="comentario-livro">Novo comentário</label><textarea id="comentario-livro" required aria-describedby="ajuda-comentario"></textarea><p class="help-text" id="ajuda-comentario">Você poderá revisar o texto antes de publicar.</p></div><button type="submit">Revisar comentário</button></form></div></section>
+      </div>
+    </main>
+    <dialog id="revisar-comentario" aria-labelledby="titulo-revisar-comentario"><div class="dialog-content"><header class="dialog-header"><h2 id="titulo-revisar-comentario">Revisar comentário</h2><button class="icon-button secondary" type="button" aria-label="Fechar diálogo" data-close-dialog>×</button></header><p>Confira o texto antes de publicar:</p><blockquote data-review-output></blockquote><div class="form-actions"><button class="secondary" type="button" data-close-dialog data-initial-focus>Voltar e editar</button><button type="button" data-publish-comment>Publicar comentário</button></div></div></dialog>
+    <footer class="prototype-note">Protótipo da Semana 6 — dados fictícios, sem persistência.</footer>
+  </body>
+</html>

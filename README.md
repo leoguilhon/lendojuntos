@@ -140,6 +140,9 @@ python -m py_compile app\main.py
 - Semana 4 — matriz de ferramentas de acessibilidade: [docs/semana-04-matriz-ferramentas-acessibilidade.md](docs/semana-04-matriz-ferramentas-acessibilidade.md)
 - Semana 5 — wireframes acessíveis de baixa fidelidade: [docs/semana-05-wireframes-acessiveis.md](docs/semana-05-wireframes-acessiveis.md)
 - Semana 5 — fluxos acessíveis anotados: [docs/semana-05-fluxos-anotados.md](docs/semana-05-fluxos-anotados.md)
+- Semana 6 — protótipo acessível de alta fidelidade: [docs/semana-06-prototipo-alta-fidelidade.md](docs/semana-06-prototipo-alta-fidelidade.md)
+- Semana 6 — guia visual de acessibilidade: [docs/semana-06-guia-visual-acessibilidade.md](docs/semana-06-guia-visual-acessibilidade.md)
+- Semana 6 — especificações para implementação: [docs/semana-06-especificacoes-prototipo.md](docs/semana-06-especificacoes-prototipo.md)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP

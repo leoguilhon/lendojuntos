@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Encontros do Entre Capítulos — LendoJuntos</title>
+    <link rel="icon" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="prototype.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+    <header class="topbar"><a class="brand" href="index.html" data-route><img src="../../frontend/public/images/logo-mark.png" alt="" /><span><strong>LendoJuntos</strong><small>clubes com memória</small></span></a><nav class="topnav" aria-label="Navegação principal"><a href="index.html" aria-current="page" data-route>Clubes</a><a href="perfil.html" data-route>Perfil</a></nav><div class="header-actions"><span class="user-badge"><span>Leitor atual</span><strong>Leonardo</strong></span><a class="button secondary" href="login.html" data-route>Sair</a></div></header>
+    <main class="shell" id="conteudo-principal" tabindex="-1">
+      <header class="page-heading"><div><p class="eyebrow">Entre Capítulos</p><h1 data-route-title>Encontros do clube</h1><p>Consulte os próximos encontros e o histórico das conversas.</p></div><div class="inline-actions"><button type="button" data-open-dialog="criar-encontro">Criar encontro</button><a class="button secondary" href="clube.html" data-route>Voltar ao clube</a></div></header>
+      <p class="status-message" role="status" aria-live="polite" data-status></p>
+      <div class="grid">
+        <section class="panel accent" aria-labelledby="proximos-encontros"><h2 id="proximos-encontros">Próximos encontros</h2><ul class="card-list"><li><article class="card"><div><span class="tag">Próximo</span><h3><a href="encontro.html" data-route>Capítulos 8 a 14</a></h3><p>10/10/2026, às 19h30</p><p>Biblioteca Central — Torto Arado</p></div></article></li></ul></section>
+        <section class="panel" aria-labelledby="historico-encontros"><h2 id="historico-encontros">Histórico de encontros</h2><ul class="card-list"><li><article class="card"><div><span class="tag">Realizado</span><h3><a href="encontro.html" data-route>Primeiras impressões</a></h3><p>26/09/2026, às 19h30</p><p>Encontro on-line — 8 participantes</p></div></article></li></ul></section>
+      </div>
+    </main>
+    <dialog id="criar-encontro" aria-labelledby="titulo-criar-encontro"><div class="dialog-content"><header class="dialog-header"><h2 id="titulo-criar-encontro">Criar encontro</h2><button class="icon-button secondary" type="button" aria-label="Fechar diálogo" data-close-dialog>×</button></header><form data-demo-form data-success-message="Encontro criado e adicionado aos próximos encontros."><div class="field"><label for="titulo-encontro">Título</label><input id="titulo-encontro" required data-initial-focus /></div><div class="field"><label for="data-encontro">Data e hora</label><input id="data-encontro" type="datetime-local" required /></div><div class="field"><label for="local-encontro">Local</label><input id="local-encontro" /></div><div class="field"><label for="pauta-encontro">Pauta</label><textarea id="pauta-encontro"></textarea></div><div class="form-actions"><button class="secondary" type="button" data-close-dialog>Cancelar</button><button type="submit">Criar encontro</button></div></form></div></dialog>
+    <footer class="prototype-note">Protótipo da Semana 6 — dados fictícios, sem persistência.</footer>
+  </body>
+</html>

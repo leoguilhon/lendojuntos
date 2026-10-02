@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entre Capítulos — LendoJuntos</title>
+    <link rel="icon" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="prototype.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+    <header class="topbar">
+      <a class="brand" href="index.html" data-route><img src="../../frontend/public/images/logo-mark.png" alt="" /><span><strong>LendoJuntos</strong><small>clubes com memória</small></span></a>
+      <nav class="topnav" aria-label="Navegação principal"><a href="index.html" aria-current="page" data-route>Clubes</a><a href="perfil.html" data-route>Perfil</a></nav>
+      <div class="header-actions"><span class="user-badge"><span>Leitor atual</span><strong>Leonardo</strong></span><a class="button secondary" href="login.html" data-route>Sair</a></div>
+    </header>
+    <main class="shell" id="conteudo-principal" tabindex="-1">
+      <header class="page-heading">
+        <div><p class="eyebrow">Clube do livro</p><h1 data-route-title>Entre Capítulos</h1><p>Ficção contemporânea e encontros quinzenais para conversar sem pressa.</p></div>
+        <div class="inline-actions">
+          <button class="secondary" type="button" aria-pressed="true" data-toggle data-on-label="Remover dos favoritos" data-off-label="Favoritar clube" data-on-message="Clube adicionado aos favoritos." data-off-message="Clube removido dos favoritos.">Remover dos favoritos</button>
+          <a class="button secondary" href="index.html" data-route>Voltar aos clubes</a>
+          <details class="action-menu" data-menu>
+            <summary>Ações do clube</summary>
+            <div class="action-menu-panel">
+              <button type="button" class="secondary" data-open-dialog="editar-clube">Editar clube</button>
+              <button type="button" class="danger" data-open-dialog="excluir-clube">Excluir clube</button>
+            </div>
+          </details>
+        </div>
+      </header>
+      <p class="status-message" role="status" aria-live="polite" data-status></p>
+      <div class="grid three">
+        <section class="panel accent" aria-labelledby="livro-atual"><h2 id="livro-atual">Livro atual</h2><h3><a href="livro.html" data-route>Torto Arado</a></h3><p>Itamar Vieira Junior</p><span class="tag">Em leitura</span></section>
+        <section class="panel" aria-labelledby="proximo-encontro"><h2 id="proximo-encontro">Próximo encontro</h2><h3><a href="encontro.html" data-route>Capítulos 8 a 14</a></h3><p>10/10/2026, às 19h30 — Biblioteca Central</p></section>
+        <section class="panel" aria-labelledby="membros"><h2 id="membros">Membros</h2><p><strong>12 participantes</strong></p><p>Você participa como administrador.</p></section>
+      </div>
+      <div class="grid section-gap">
+        <section class="panel" aria-labelledby="livros-clube"><div class="section-heading"><h2 id="livros-clube">Livros do clube</h2><a href="livros.html" data-route>Ver todos</a></div><ul><li>Torto Arado — Em leitura</li><li>O Avesso da Pele — Concluído</li></ul></section>
+        <section class="panel" aria-labelledby="encontros-clube"><div class="section-heading"><h2 id="encontros-clube">Encontros</h2><a href="encontros.html" data-route>Ver todos</a></div><ul><li>Capítulos 8 a 14 — Próximo</li><li>Primeiras impressões — Realizado</li></ul></section>
+      </div>
+    </main>
+    <dialog id="editar-clube" aria-labelledby="titulo-editar-clube"><div class="dialog-content"><header class="dialog-header"><h2 id="titulo-editar-clube">Editar clube Entre Capítulos</h2><button class="icon-button secondary" type="button" aria-label="Fechar diálogo" data-close-dialog>×</button></header><form data-demo-form data-success-message="Clube Entre Capítulos atualizado."><div class="field"><label for="nome-clube">Nome</label><input id="nome-clube" value="Entre Capítulos" required data-initial-focus /></div><div class="field"><label for="descricao-clube">Descrição</label><textarea id="descricao-clube">Ficção contemporânea e encontros quinzenais.</textarea></div><div class="form-actions"><button class="secondary" type="button" data-close-dialog>Cancelar</button><button type="submit">Salvar alterações</button></div></form></div></dialog>
+    <dialog id="excluir-clube" aria-labelledby="titulo-excluir-clube"><div class="dialog-content"><header class="dialog-header"><h2 id="titulo-excluir-clube">Excluir clube Entre Capítulos?</h2><button class="icon-button secondary" type="button" aria-label="Fechar diálogo" data-close-dialog>×</button></header><p>Livros, encontros e comentários do clube também serão excluídos. Esta ação não pode ser desfeita.</p><div class="form-actions"><button class="secondary" type="button" data-close-dialog data-initial-focus>Cancelar</button><button class="danger" type="button" data-close-dialog>Excluir clube</button></div></div></dialog>
+    <footer class="prototype-note">Protótipo da Semana 6 — dados fictícios, sem persistência.</footer>
+  </body>
+</html>

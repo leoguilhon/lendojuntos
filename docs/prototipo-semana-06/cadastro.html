@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>Criar conta — LendoJuntos</title>
+    <link rel="icon" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="prototype.js" defer></script>
+  </head>
+  <body>
+    <main class="auth-page" id="conteudo-principal">
+      <div class="auth-layout">
+        <section class="auth-story" aria-labelledby="titulo-cadastro">
+          <p class="eyebrow">LendoJuntos</p>
+          <h1 id="titulo-cadastro" data-route-title>Crie seu perfil e encontre novas leituras</h1>
+          <p>Participe de clubes do livro e mantenha o histórico das conversas acessível para todo o grupo.</p>
+        </section>
+        <section class="auth-form" aria-labelledby="subtitulo-cadastro">
+          <h2 id="subtitulo-cadastro">Criar conta</h2>
+          <form data-auth-form data-destination="index.html">
+            <div class="field">
+              <label for="nome">Nome</label>
+              <input id="nome" name="nome" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="email">E-mail</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="senha">Senha</label>
+              <input id="senha" name="senha" type="password" autocomplete="new-password" minlength="8" aria-describedby="ajuda-senha" required />
+              <p class="help-text" id="ajuda-senha">Use pelo menos oito caracteres.</p>
+            </div>
+            <button type="submit">Criar conta</button>
+          </form>
+          <p>Já tem conta? <a href="login.html" data-route>Voltar para login</a></p>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

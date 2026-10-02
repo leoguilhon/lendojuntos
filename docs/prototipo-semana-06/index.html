@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>Clubes do livro — LendoJuntos</title>
+    <link rel="icon" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="prototype.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+    <header class="topbar">
+      <a class="brand" href="index.html" data-route>
+        <img src="../../frontend/public/images/logo-mark.png" alt="" />
+        <span><strong>LendoJuntos</strong><small>clubes com memória</small></span>
+      </a>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a href="index.html" aria-current="page" data-route>Clubes</a>
+        <a href="perfil.html" data-route>Perfil</a>
+      </nav>
+      <div class="header-actions">
+        <span class="user-badge"><span>Leitor atual</span><strong>Leonardo</strong></span>
+        <a class="button secondary" href="login.html" data-route>Sair</a>
+      </div>
+    </header>
+
+    <main class="shell" id="conteudo-principal" tabindex="-1">
+      <header class="page-heading">
+        <div>
+          <p class="eyebrow">Sua comunidade de leitura</p>
+          <h1 data-route-title>Clubes do livro</h1>
+          <p>Acompanhe leituras, encontros e conversas em um só lugar.</p>
+          <div class="metrics" aria-label="Resumo dos clubes">
+            <div class="metric"><span>Meus clubes</span><strong>2</strong></div>
+            <div class="metric"><span>Favoritos</span><strong>1</strong></div>
+            <div class="metric"><span>Disponíveis</span><strong>2</strong></div>
+          </div>
+        </div>
+        <button type="button" data-open-dialog="criar-clube">Criar clube</button>
+      </header>
+
+      <p class="status-message" role="status" aria-live="polite" data-status></p>
+
+      <div class="grid">
+        <section class="panel accent" aria-labelledby="meus-clubes">
+          <div class="section-heading">
+            <div><h2 id="meus-clubes">Meus clubes</h2><p>Clubes dos quais você participa.</p></div>
+          </div>
+          <ul class="card-list">
+            <li>
+              <article class="card">
+                <div>
+                  <h3><a href="clube.html" data-route>Entre Capítulos</a></h3>
+                  <p>Ficção contemporânea e encontros quinzenais.</p>
+                  <div class="tag-row"><span class="tag">12 membros</span><span class="tag">Em leitura</span></div>
+                </div>
+                <div class="card-actions">
+                  <button type="button" class="secondary" aria-pressed="true" data-toggle data-on-label="Remover dos favoritos" data-off-label="Favoritar clube" data-on-message="Entre Capítulos adicionado aos favoritos." data-off-message="Entre Capítulos removido dos favoritos.">Remover dos favoritos</button>
+                </div>
+              </article>
+            </li>
+            <li>
+              <article class="card">
+                <div>
+                  <h3><a href="clube.html" data-route>Leituras do Futuro</a></h3>
+                  <p>Ficção científica, tecnologia e sociedade.</p>
+                  <div class="tag-row"><span class="tag">8 membros</span><span class="tag">Planejado</span></div>
+                </div>
+                <div class="card-actions">
+                  <button type="button" class="secondary" aria-pressed="false" data-toggle data-on-label="Remover dos favoritos" data-off-label="Favoritar clube" data-on-message="Leituras do Futuro adicionado aos favoritos." data-off-message="Leituras do Futuro removido dos favoritos.">Favoritar clube</button>
+                </div>
+              </article>
+            </li>
+          </ul>
+        </section>
+
+        <section class="panel" aria-labelledby="clubes-disponiveis">
+          <div class="section-heading">
+            <div><h2 id="clubes-disponiveis">Clubes disponíveis</h2><p>Conheça outras comunidades.</p></div>
+          </div>
+          <ul class="card-list">
+            <li>
+              <article class="card">
+                <div>
+                  <h3><a href="clube.html" data-route>Clássicos em Debate</a></h3>
+                  <p>Releituras mensais de obras clássicas.</p>
+                  <div class="tag-row"><span class="tag">18 membros</span></div>
+                </div>
+                <div class="card-actions">
+                  <button type="button" data-toggle aria-pressed="false" data-on-label="Membro do clube" data-off-label="Ingressar no clube" data-on-message="Você ingressou no clube Clássicos em Debate." data-off-message="Inscrição removida.">Ingressar no clube</button>
+                </div>
+              </article>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </main>
+
+    <dialog id="criar-clube" aria-labelledby="titulo-criar-clube">
+      <div class="dialog-content">
+        <header class="dialog-header">
+          <h2 id="titulo-criar-clube">Criar clube</h2>
+          <button class="icon-button secondary" type="button" aria-label="Fechar diálogo" data-close-dialog>×</button>
+        </header>
+        <form data-demo-form data-success-message="Clube criado. Ele foi adicionado à seção Meus clubes.">
+          <div class="field">
+            <label for="nome-clube">Nome do clube</label>
+            <input id="nome-clube" name="nome" required data-initial-focus />
+          </div>
+          <div class="field">
+            <label for="descricao-clube">Descrição</label>
+            <textarea id="descricao-clube" name="descricao" aria-describedby="ajuda-descricao"></textarea>
+            <p class="help-text" id="ajuda-descricao">Explique o tema e a frequência dos encontros.</p>
+          </div>
+          <div class="form-actions">
+            <button class="secondary" type="button" data-close-dialog>Cancelar</button>
+            <button type="submit">Criar clube</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+    <footer class="prototype-note">Protótipo da Semana 6 — dados fictícios, sem persistência.</footer>
+  </body>
+</html>

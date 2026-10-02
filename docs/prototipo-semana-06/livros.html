@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Livros do Entre Capítulos — LendoJuntos</title>
+    <link rel="icon" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="prototype.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+    <header class="topbar">
+      <a class="brand" href="index.html" data-route><img src="../../frontend/public/images/logo-mark.png" alt="" /><span><strong>LendoJuntos</strong><small>clubes com memória</small></span></a>
+      <nav class="topnav" aria-label="Navegação principal"><a href="index.html" aria-current="page" data-route>Clubes</a><a href="perfil.html" data-route>Perfil</a></nav>
+      <div class="header-actions"><span class="user-badge"><span>Leitor atual</span><strong>Leonardo</strong></span><a class="button secondary" href="login.html" data-route>Sair</a></div>
+    </header>
+    <main class="shell" id="conteudo-principal" tabindex="-1">
+      <header class="page-heading">
+        <div><p class="eyebrow">Entre Capítulos</p><h1 data-route-title>Livros do clube</h1><p>Consulte o histórico e acompanhe a situação de cada leitura.</p></div>
+        <div class="inline-actions"><button type="button" data-open-dialog="cadastrar-livro">Cadastrar livro</button><a class="button secondary" href="clube.html" data-route>Voltar ao clube</a></div>
+      </header>
+      <p class="status-message" role="status" aria-live="polite" data-status></p>
+      <section class="panel" aria-labelledby="todos-livros">
+        <div class="section-heading"><div><h2 id="todos-livros">Todos os livros</h2><p>Três leituras cadastradas.</p></div></div>
+        <ul class="card-list">
+          <li><article class="card"><div><div class="tag-row"><span class="tag">Em leitura</span></div><h3><a href="livro.html" data-route>Torto Arado</a></h3><p>Itamar Vieira Junior — Uma história de terra, memória e resistência.</p></div><div class="card-actions"><button class="secondary" type="button" aria-pressed="true" data-toggle data-on-label="Remover curtida" data-off-label="Curtir livro" data-on-message="Torto Arado curtido." data-off-message="Curtida removida de Torto Arado.">Remover curtida</button></div></article></li>
+          <li><article class="card"><div><div class="tag-row"><span class="tag">Concluído</span></div><h3><a href="livro.html" data-route>O Avesso da Pele</a></h3><p>Jeferson Tenório — Memória familiar, identidade e violência.</p></div><div class="card-actions"><button class="secondary" type="button" aria-pressed="false" data-toggle data-on-label="Remover curtida" data-off-label="Curtir livro" data-on-message="O Avesso da Pele curtido." data-off-message="Curtida removida.">Curtir livro</button></div></article></li>
+          <li><article class="card"><div><div class="tag-row"><span class="tag">Planejado</span></div><h3><a href="livro.html" data-route>Quarto de Despejo</a></h3><p>Carolina Maria de Jesus — Diário, cidade e desigualdade social.</p></div><div class="card-actions"><button class="secondary" type="button" aria-pressed="false" data-toggle data-on-label="Remover curtida" data-off-label="Curtir livro" data-on-message="Quarto de Despejo curtido." data-off-message="Curtida removida.">Curtir livro</button></div></article></li>
+        </ul>
+      </section>
+    </main>
+    <dialog id="cadastrar-livro" aria-labelledby="titulo-cadastrar-livro"><div class="dialog-content"><header class="dialog-header"><h2 id="titulo-cadastrar-livro">Cadastrar livro</h2><button class="icon-button secondary" type="button" aria-label="Fechar diálogo" data-close-dialog>×</button></header><form data-demo-form data-success-message="Livro cadastrado e adicionado ao início da lista."><div class="field"><label for="titulo-livro">Título</label><input id="titulo-livro" required data-initial-focus /></div><div class="field"><label for="autor-livro">Autor</label><input id="autor-livro" required /></div><div class="field"><label for="sinopse-livro">Sinopse</label><textarea id="sinopse-livro"></textarea></div><div class="field"><label for="situacao-livro">Situação</label><select id="situacao-livro"><option>Planejado</option><option>Em leitura</option><option>Concluído</option></select></div><div class="form-actions"><button class="secondary" type="button" data-close-dialog>Cancelar</button><button type="submit">Cadastrar livro</button></div></form></div></dialog>
+    <footer class="prototype-note">Protótipo da Semana 6 — dados fictícios, sem persistência.</footer>
+  </body>
+</html>

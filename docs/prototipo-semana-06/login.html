@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>Entrar — LendoJuntos</title>
+    <link rel="icon" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="prototype.js" defer></script>
+  </head>
+  <body>
+    <main class="auth-page" id="conteudo-principal">
+      <div class="auth-layout">
+        <section class="auth-story" aria-labelledby="titulo-login">
+          <p class="eyebrow">LendoJuntos</p>
+          <h1 id="titulo-login" data-route-title>Organize clubes, encontros e conversas</h1>
+          <p>Uma experiência de leitura compartilhada, com contexto e autonomia.</p>
+          <ul>
+            <li>Acompanhe o livro atual e o histórico.</li>
+            <li>Confirme presença nos próximos encontros.</li>
+            <li>Registre comentários e decisões do grupo.</li>
+          </ul>
+        </section>
+        <section class="auth-form" aria-labelledby="subtitulo-login">
+          <h2 id="subtitulo-login">Entrar</h2>
+          <p class="status-message error" role="alert" data-status></p>
+          <form data-auth-form data-destination="index.html">
+            <div class="field">
+              <label for="email">E-mail</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="senha">Senha</label>
+              <input id="senha" name="senha" type="password" autocomplete="current-password" required />
+            </div>
+            <button type="submit">Entrar</button>
+          </form>
+          <p>Não tem conta? <a href="cadastro.html" data-route>Criar conta</a></p>
+          <p class="help-text">Protótipo: qualquer e-mail e senha não vazios permitem avançar.</p>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

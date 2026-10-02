@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil — LendoJuntos</title>
+    <link rel="icon" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="prototype.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+    <header class="topbar"><a class="brand" href="index.html" data-route><img src="../../frontend/public/images/logo-mark.png" alt="" /><span><strong>LendoJuntos</strong><small>clubes com memória</small></span></a><nav class="topnav" aria-label="Navegação principal"><a href="index.html" data-route>Clubes</a><a href="perfil.html" aria-current="page" data-route>Perfil</a></nav><div class="header-actions"><span class="user-badge"><span>Leitor atual</span><strong>Leonardo</strong></span><a class="button secondary" href="login.html" data-route>Sair</a></div></header>
+    <main class="shell narrow" id="conteudo-principal" tabindex="-1">
+      <header class="page-heading"><div><p class="eyebrow">Minha conta</p><h1 data-route-title>Perfil</h1><p><strong>E-mail da conta:</strong> leonardo@example.com</p></div></header>
+      <p class="status-message" role="status" aria-live="polite" data-status></p>
+      <section class="panel accent" aria-labelledby="editar-perfil">
+        <h2 id="editar-perfil">Editar perfil</h2>
+        <form data-review-changes="revisar-perfil">
+          <div class="field"><label for="nome-perfil">Nome</label><input id="nome-perfil" name="nome" value="Leonardo" autocomplete="name" required /></div>
+          <div class="field"><label for="bio-perfil">Biografia</label><textarea id="bio-perfil" name="bio" aria-describedby="ajuda-bio">Leitor de ficção brasileira e organizador do clube Entre Capítulos.</textarea><p class="help-text" id="ajuda-bio">Este texto fica visível para os participantes dos seus clubes.</p></div>
+          <button type="submit">Revisar alterações</button>
+        </form>
+      </section>
+    </main>
+    <dialog id="revisar-perfil" aria-labelledby="titulo-revisar-perfil"><div class="dialog-content"><header class="dialog-header"><h2 id="titulo-revisar-perfil">Revisar alterações do perfil</h2><button class="icon-button secondary" type="button" aria-label="Fechar diálogo" data-close-dialog>×</button></header><dl><dt><strong>Nome</strong></dt><dd data-review-field="nome"></dd><dt><strong>Biografia</strong></dt><dd data-review-field="bio"></dd></dl><div class="form-actions"><button class="secondary" type="button" data-close-dialog data-initial-focus>Voltar e editar</button><button type="button" data-confirm-changes="Perfil atualizado. As alterações já estão disponíveis.">Salvar perfil</button></div></div></dialog>
+    <footer class="prototype-note">Protótipo da Semana 6 — dados fictícios, sem persistência.</footer>
+  </body>
+</html>
