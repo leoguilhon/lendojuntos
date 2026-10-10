@@ -99,7 +99,7 @@ export function DashboardPage() {
   }
 
   return (
-    <main className="shell">
+    <main className="shell" id="conteudo-principal">
       <section className="page-heading page-heading-with-actions">
         <div>
           <p className="eyebrow">Area dos clubes</p>

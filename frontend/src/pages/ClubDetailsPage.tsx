@@ -203,15 +203,15 @@ export function ClubDetailsPage() {
   }
 
   if (isLoading) {
-    return <main className="shell">Carregando clube...</main>;
+    return <main className="shell" id="conteudo-principal">Carregando clube...</main>;
   }
 
   if (!club) {
-    return <main className="shell">{feedback || "Clube não encontrado."}</main>;
+    return <main className="shell" id="conteudo-principal">{feedback || "Clube não encontrado."}</main>;
   }
 
   return (
-    <main className="shell">
+    <main className="shell" id="conteudo-principal">
       <section className="page-heading page-heading-with-actions">
         <div>
           <p className="eyebrow">Clube de leitura</p>

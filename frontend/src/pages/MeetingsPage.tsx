@@ -153,15 +153,15 @@ export function MeetingsPage() {
   }
 
   if (isLoading) {
-    return <main className="shell">Carregando encontros...</main>;
+    return <main className="shell" id="conteudo-principal">Carregando encontros...</main>;
   }
 
   if (!club) {
-    return <main className="shell">{feedback || "Clube não encontrado."}</main>;
+    return <main className="shell" id="conteudo-principal">{feedback || "Clube não encontrado."}</main>;
   }
 
   return (
-    <main className="shell">
+    <main className="shell" id="conteudo-principal">
       <section className="page-heading page-heading-with-actions">
         <div>
           <p className="eyebrow">Agenda do clube</p>

@@ -29,7 +29,7 @@ export function RegisterPage() {
   }
 
   return (
-    <main className="auth-page">
+    <main className="auth-page" id="conteudo-principal">
       <section className="auth-stage">
         <section className="auth-story">
           <p className="eyebrow">Novo capitulo</p>

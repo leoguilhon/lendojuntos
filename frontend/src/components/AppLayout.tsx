@@ -1,9 +1,11 @@
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 export function AppLayout() {
   const { logout, user } = useAuth();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
+  const isClubSection = pathname === "/dashboard" || pathname.startsWith("/clubs/") || pathname.startsWith("/books/");
 
   function handleLogout() {
     logout();
@@ -20,8 +22,14 @@ export function AppLayout() {
             <strong>clubes com memoria</strong>
           </div>
         </Link>
-        <nav className="topnav">
-          <NavLink to="/dashboard">Clubes</NavLink>
+        <nav className="topnav" aria-label="Navegação principal">
+          <Link
+            aria-current={isClubSection ? "page" : undefined}
+            className={isClubSection ? "active" : undefined}
+            to="/dashboard"
+          >
+            Clubes
+          </Link>
           <NavLink to="/profile">Perfil</NavLink>
         </nav>
         <div className="user-menu">

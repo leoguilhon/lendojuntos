@@ -190,15 +190,15 @@ export function MeetingDetailsPage() {
   }
 
   if (isLoading) {
-    return <main className="shell">Carregando encontro...</main>;
+    return <main className="shell" id="conteudo-principal">Carregando encontro...</main>;
   }
 
   if (!club || !meeting) {
-    return <main className="shell">{feedback || "Encontro não encontrado."}</main>;
+    return <main className="shell" id="conteudo-principal">{feedback || "Encontro não encontrado."}</main>;
   }
 
   return (
-    <main className="shell">
+    <main className="shell" id="conteudo-principal">
       <section className="page-heading page-heading-with-actions">
         <div>
           <p className="eyebrow">Encontro do clube</p>

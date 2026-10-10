@@ -10,10 +10,13 @@ import { MeetingDetailsPage } from "../pages/MeetingDetailsPage";
 import { ProfilePage } from "../pages/ProfilePage";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { AppLayout } from "../components/AppLayout";
+import { RouteAccessibility, SkipLink } from "../components/RouteAccessibility";
 
 export function AppRoutes() {
   return (
     <BrowserRouter>
+      <SkipLink />
+      <RouteAccessibility />
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

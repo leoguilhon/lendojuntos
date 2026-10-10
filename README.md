@@ -143,6 +143,8 @@ python -m py_compile app\main.py
 - Semana 6 — protótipo acessível de alta fidelidade: [docs/semana-06-prototipo-alta-fidelidade.md](docs/semana-06-prototipo-alta-fidelidade.md)
 - Semana 6 — guia visual de acessibilidade: [docs/semana-06-guia-visual-acessibilidade.md](docs/semana-06-guia-visual-acessibilidade.md)
 - Semana 6 — especificações para implementação: [docs/semana-06-especificacoes-prototipo.md](docs/semana-06-especificacoes-prototipo.md)
+- Semana 7 — implementação das fundações de acessibilidade: [docs/semana-07-implementacao-fundacoes.md](docs/semana-07-implementacao-fundacoes.md)
+- Semana 7 — roteiro reproduzível de validação: [docs/semana-07-validar-fundacoes.mjs](docs/semana-07-validar-fundacoes.mjs)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP

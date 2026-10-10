@@ -113,15 +113,15 @@ export function BookDetailsPage() {
   }
 
   if (isLoading) {
-    return <main className="shell">Carregando livro...</main>;
+    return <main className="shell" id="conteudo-principal">Carregando livro...</main>;
   }
 
   if (!book) {
-    return <main className="shell">{feedback || "Livro não encontrado."}</main>;
+    return <main className="shell" id="conteudo-principal">{feedback || "Livro não encontrado."}</main>;
   }
 
   return (
-    <main className="shell narrow">
+    <main className="shell narrow" id="conteudo-principal">
       <section className="page-heading page-heading-with-actions">
         <div>
           <p className="eyebrow">{statusLabel[book.status]}</p>

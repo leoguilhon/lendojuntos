@@ -5,7 +5,7 @@ export function ProtectedRoute() {
   const { token, isLoading } = useAuth();
 
   if (isLoading) {
-    return <main className="shell">Carregando...</main>;
+    return <main className="shell" id="conteudo-principal">Carregando...</main>;
   }
 
   return token ? <Outlet /> : <Navigate to="/" replace />;

@@ -23,7 +23,7 @@ export function ProfilePage() {
   }
 
   return (
-    <main className="shell narrow">
+    <main className="shell narrow" id="conteudo-principal">
       <section className="page-heading">
         <div>
           <p className="eyebrow">Minha conta</p>
