@@ -236,7 +236,7 @@ export function ClubDetailsPage() {
                 </button>
               )}
               {(canEditClub || canDeleteClub) && (
-                <ActionMenu>
+                <ActionMenu label="Ações do clube">
                   {canEditClub && (
                     <button type="button" onClick={() => setIsEditClubModalOpen(true)}>
                       ✏️ Editar clube
@@ -428,7 +428,7 @@ export function ClubDetailsPage() {
             fazer isso.
           </p>
           <div className="form-actions">
-            <button className="ghost-button" type="button" onClick={() => setIsDeleteModalOpen(false)}>
+            <button className="ghost-button" data-modal-initial-focus type="button" onClick={() => setIsDeleteModalOpen(false)}>
               Cancelar
             </button>
             <button className="danger-button" type="button" onClick={handleDeleteClub} disabled={isDeleting}>
@@ -442,7 +442,7 @@ export function ClubDetailsPage() {
         <div className="confirmation-content">
           <p>Ao sair do clube, você deixará de acessar seus livros, encontros e comentários internos.</p>
           <div className="form-actions">
-            <button className="ghost-button" type="button" onClick={() => setIsLeaveModalOpen(false)}>
+            <button className="ghost-button" data-modal-initial-focus type="button" onClick={() => setIsLeaveModalOpen(false)}>
               Cancelar
             </button>
             <button className="danger-button" type="button" onClick={handleLeaveClub} disabled={isLeaving}>

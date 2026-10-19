@@ -209,7 +209,7 @@ export function MeetingDetailsPage() {
                 ↩️ Voltar aos encontros
               </Link>
               {isAdmin && (
-                <ActionMenu>
+                <ActionMenu label="Ações do encontro">
                   <button type="button" onClick={handleOpenEditMeetingModal}>
                     ✏️ Editar encontro
                   </button>
@@ -393,7 +393,7 @@ export function MeetingDetailsPage() {
         <div className="confirmation-content">
           <p>Esta ação excluirá o encontro, suas confirmações de presença e todos os comentários vinculados.</p>
           <div className="form-actions">
-            <button className="ghost-button" type="button" onClick={() => setIsDeleteMeetingModalOpen(false)}>
+            <button className="ghost-button" data-modal-initial-focus type="button" onClick={() => setIsDeleteMeetingModalOpen(false)}>
               Cancelar
             </button>
             <button className="danger-button" type="button" onClick={handleDeleteMeeting} disabled={isDeletingMeeting}>

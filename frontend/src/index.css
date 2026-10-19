@@ -1039,11 +1039,11 @@ p {
   z-index: 12;
 }
 
-.action-menu[open] {
+.action-menu[data-open="true"] {
   z-index: 40;
 }
 
-.action-menu summary {
+.action-menu-trigger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1063,16 +1063,12 @@ p {
     transform 180ms var(--ease-standard);
 }
 
-.action-menu summary::-webkit-details-marker {
-  display: none;
-}
-
-.action-menu[open] summary {
+.action-menu-trigger[aria-expanded="true"] {
   border-color: rgb(23 76 60 / 28%);
   box-shadow: 0 0 0 4px rgb(23 76 60 / 8%);
 }
 
-.action-menu summary:hover {
+.action-menu-trigger:hover {
   background: rgb(255 250 244 / 98%);
   border-color: rgb(155 63 22 / 32%);
   transform: translateY(-1px);
@@ -1091,6 +1087,10 @@ p {
   padding: 8px;
   background: rgb(255 253 249 / 98%);
   box-shadow: var(--shadow-lg);
+}
+
+.action-menu-panel[hidden] {
+  display: none;
 }
 
 .action-menu-panel button,
@@ -1313,7 +1313,23 @@ p {
   z-index: 50;
   display: grid;
   place-items: center;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  overflow: auto;
+  border: 0;
   padding: 24px;
+  background: transparent;
+  color: var(--color-text);
+}
+
+.modal-backdrop:not([open]) {
+  display: none;
+}
+
+.modal-backdrop::backdrop {
   background: rgb(32 27 22 / 40%);
   backdrop-filter: blur(8px);
 }
@@ -1525,7 +1541,7 @@ p {
   }
 
   .action-menu,
-  .action-menu summary {
+  .action-menu-trigger {
     width: 100%;
   }
 

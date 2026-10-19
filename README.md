@@ -145,6 +145,8 @@ python -m py_compile app\main.py
 - Semana 6 — especificações para implementação: [docs/semana-06-especificacoes-prototipo.md](docs/semana-06-especificacoes-prototipo.md)
 - Semana 7 — implementação das fundações de acessibilidade: [docs/semana-07-implementacao-fundacoes.md](docs/semana-07-implementacao-fundacoes.md)
 - Semana 7 — roteiro reproduzível de validação: [docs/semana-07-validar-fundacoes.mjs](docs/semana-07-validar-fundacoes.mjs)
+- Semana 8 — implementação de diálogos e menus de ações acessíveis: [docs/semana-08-implementacao-sobreposicoes.md](docs/semana-08-implementacao-sobreposicoes.md)
+- Semana 8 — roteiro reproduzível de validação: [docs/semana-08-validar-sobreposicoes.mjs](docs/semana-08-validar-sobreposicoes.mjs)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP
