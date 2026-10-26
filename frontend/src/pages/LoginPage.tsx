@@ -1,27 +1,53 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getErrorMessage } from "../services/api";
+import { validateEmail } from "../utils/formValidation";
+
+interface LoginErrors {
+  email?: string;
+  password?: string;
+  form?: string;
+}
 
 export function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<LoginErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setError("");
+    const nextErrors: LoginErrors = {
+      email: validateEmail(email) || undefined,
+      password: password ? undefined : "Informe sua senha.",
+    };
+
+    if (nextErrors.email || nextErrors.password) {
+      setErrors(nextErrors);
+      (nextErrors.email ? emailRef : passwordRef).current?.focus();
+      return;
+    }
+
+    setErrors({});
     setIsSubmitting(true);
 
     try {
-      await login(email, password);
+      await login(email.trim(), password);
       navigate("/dashboard");
     } catch (err) {
-      setError(getErrorMessage(err));
+      const message = getErrorMessage(err);
+      setErrors({
+        email: "Confira o e-mail informado.",
+        password: "Confira a senha informada.",
+        form: message,
+      });
+      emailRef.current?.focus();
     } finally {
       setIsSubmitting(false);
     }
@@ -63,32 +89,57 @@ export function LoginPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit}>
-            <label>
-              E-mail
+          <form onSubmit={handleSubmit} noValidate aria-busy={isSubmitting}>
+            <p className="form-instructions" id="login-instructions">
+              Todos os campos são obrigatórios.
+            </p>
+
+            <div className="form-field">
+              <label htmlFor="login-email">E-mail</label>
               <input
+                ref={emailRef}
+                id="login-email"
                 type="email"
                 value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  if (errors.email || errors.form) setErrors((current) => ({ ...current, email: undefined, form: undefined }));
+                }}
                 autoComplete="email"
+                inputMode="email"
                 placeholder="voce@exemplo.com"
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={errors.email ? "login-email-error" : "login-instructions"}
                 required
               />
-            </label>
+              {errors.email && <p className="field-error" id="login-email-error">{errors.email}</p>}
+            </div>
 
-            <label>
-              Senha
+            <div className="form-field">
+              <label htmlFor="login-password">Senha</label>
               <input
+                ref={passwordRef}
+                id="login-password"
                 type="password"
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                  if (errors.password || errors.form) setErrors((current) => ({ ...current, password: undefined, form: undefined }));
+                }}
                 autoComplete="current-password"
                 placeholder="Digite sua senha"
+                aria-invalid={Boolean(errors.password)}
+                aria-describedby={errors.password ? "login-password-error" : "login-instructions"}
                 required
               />
-            </label>
+              {errors.password && <p className="field-error" id="login-password-error">{errors.password}</p>}
+            </div>
 
-            {error && <p className="feedback error">{error}</p>}
+            {errors.form && <p className="feedback error form-alert" role="alert">{errors.form}</p>}
+
+            <p className="visually-hidden" role="status" aria-live="polite">
+              {isSubmitting ? "Verificando seus dados. Aguarde." : ""}
+            </p>
 
             <button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Entrando..." : "Entrar na plataforma"}
