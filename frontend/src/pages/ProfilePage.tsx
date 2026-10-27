@@ -102,7 +102,7 @@ export function ProfilePage() {
               aria-describedby={errors.name ? "profile-name-error" : "profile-instructions"}
               required
             />
-            {errors.name && <p className="field-error" id="profile-name-error">{errors.name}</p>}
+            {errors.name && <p className="field-error" id="profile-name-error" tabIndex={0}>{errors.name}</p>}
           </div>
 
           <div className="form-field">
@@ -119,7 +119,7 @@ export function ProfilePage() {
               aria-describedby={`profile-bio-count${errors.bio ? " profile-bio-error" : ""}`}
             />
             <p className="field-hint" id="profile-bio-count">{bio.length} de 240 caracteres.</p>
-            {errors.bio && <p className="field-error" id="profile-bio-error">{errors.bio}</p>}
+            {errors.bio && <p className="field-error" id="profile-bio-error" tabIndex={0}>{errors.bio}</p>}
           </div>
 
           <button type="submit">Revisar alterações</button>
@@ -137,7 +137,7 @@ export function ProfilePage() {
             <div><dt>Bio</dt><dd>{bio.trim() || "Não informada"}</dd></div>
           </dl>
 
-          {errors.form && <p className="feedback error form-alert" role="alert">{errors.form}</p>}
+          {errors.form && <p className="feedback error form-alert" role="alert" tabIndex={0}>{errors.form}</p>}
           <p className="visually-hidden" role="status" aria-live="polite">
             {isSubmitting ? "Salvando as alterações do perfil. Aguarde." : ""}
           </p>

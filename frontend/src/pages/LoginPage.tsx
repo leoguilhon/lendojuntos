@@ -112,7 +112,7 @@ export function LoginPage() {
                 aria-describedby={errors.email ? "login-email-error" : "login-instructions"}
                 required
               />
-              {errors.email && <p className="field-error" id="login-email-error">{errors.email}</p>}
+              {errors.email && <p className="field-error" id="login-email-error" tabIndex={0}>{errors.email}</p>}
             </div>
 
             <div className="form-field">
@@ -132,10 +132,10 @@ export function LoginPage() {
                 aria-describedby={errors.password ? "login-password-error" : "login-instructions"}
                 required
               />
-              {errors.password && <p className="field-error" id="login-password-error">{errors.password}</p>}
+              {errors.password && <p className="field-error" id="login-password-error" tabIndex={0}>{errors.password}</p>}
             </div>
 
-            {errors.form && <p className="feedback error form-alert" role="alert">{errors.form}</p>}
+            {errors.form && <p className="feedback error form-alert" role="alert" tabIndex={0}>{errors.form}</p>}
 
             <p className="visually-hidden" role="status" aria-live="polite">
               {isSubmitting ? "Verificando seus dados. Aguarde." : ""}

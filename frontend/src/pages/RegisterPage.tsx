@@ -117,7 +117,7 @@ export function RegisterPage() {
                 aria-describedby={errors.name ? "register-name-error" : "register-instructions"}
                 required
               />
-              {errors.name && <p className="field-error" id="register-name-error">{errors.name}</p>}
+              {errors.name && <p className="field-error" id="register-name-error" tabIndex={0}>{errors.name}</p>}
             </div>
 
             <div className="form-field">
@@ -138,7 +138,7 @@ export function RegisterPage() {
                 aria-describedby={errors.email ? "register-email-error" : "register-instructions"}
                 required
               />
-              {errors.email && <p className="field-error" id="register-email-error">{errors.email}</p>}
+              {errors.email && <p className="field-error" id="register-email-error" tabIndex={0}>{errors.email}</p>}
             </div>
 
             <div className="form-field">
@@ -159,10 +159,10 @@ export function RegisterPage() {
                 aria-describedby={errors.password ? "register-password-error" : "register-instructions"}
                 required
               />
-              {errors.password && <p className="field-error" id="register-password-error">{errors.password}</p>}
+              {errors.password && <p className="field-error" id="register-password-error" tabIndex={0}>{errors.password}</p>}
             </div>
 
-            {errors.form && <p className="feedback error form-alert" role="alert">{errors.form}</p>}
+            {errors.form && <p className="feedback error form-alert" role="alert" tabIndex={0}>{errors.form}</p>}
 
             <p className="visually-hidden" role="status" aria-live="polite">
               {isSubmitting ? "Criando sua conta. Aguarde." : ""}
