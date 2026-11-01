@@ -149,6 +149,8 @@ python -m py_compile app\main.py
 - Semana 8 — roteiro reproduzível de validação: [docs/semana-08-validar-sobreposicoes.mjs](docs/semana-08-validar-sobreposicoes.mjs)
 - Semana 9 — implementação dos formulários acessíveis de login, cadastro e perfil: [docs/semana-09-implementacao-formularios.md](docs/semana-09-implementacao-formularios.md)
 - Semana 9 — roteiro reproduzível de validação e capturas: [docs/semana-09-validar-formularios.mjs](docs/semana-09-validar-formularios.mjs)
+- Semana 10 — implementação de cartões, links e estados acessíveis: [docs/semana-10-implementacao-cartoes-estados.md](docs/semana-10-implementacao-cartoes-estados.md)
+- Semana 10 — roteiro reproduzível de validação e capturas: [docs/semana-10-validar-cartoes-estados.mjs](docs/semana-10-validar-cartoes-estados.mjs)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP

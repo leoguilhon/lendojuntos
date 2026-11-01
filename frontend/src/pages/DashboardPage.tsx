@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import type { FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { Modal } from "../components/Modal";
 import { useAuth } from "../contexts/AuthContext";
 import { clubService, getErrorMessage } from "../services/api";
 import type { Club } from "../types";
-import { isInteractiveElementTarget } from "../utils/meetings";
 
 export function DashboardPage() {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [clubs, setClubs] = useState<Club[]>([]);
   const [name, setName] = useState("");
@@ -80,22 +78,14 @@ export function DashboardPage() {
     try {
       const updatedClub = club.is_favorite ? await clubService.unfavorite(club.id) : await clubService.favorite(club.id);
       setClubs((current) => current.map((item) => (item.id === club.id ? updatedClub : item)));
-      setFeedback(updatedClub.is_favorite ? "Clube favoritado." : "Clube removido dos favoritos.");
+      setFeedback(
+        updatedClub.is_favorite
+          ? `${updatedClub.name} adicionado aos favoritos.`
+          : `${updatedClub.name} removido dos favoritos.`,
+      );
     } catch (err) {
       setFeedback(getErrorMessage(err));
     }
-  }
-
-  function handleClubCardClick(event: MouseEvent<HTMLElement>, clubId: number) {
-    if (isInteractiveElementTarget(event.target)) return;
-    navigate(`/clubs/${clubId}`);
-  }
-
-  function handleClubCardKeyDown(event: KeyboardEvent<HTMLElement>, clubId: number) {
-    if (event.target !== event.currentTarget) return;
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    navigate(`/clubs/${clubId}`);
   }
 
   return (
@@ -129,7 +119,7 @@ export function DashboardPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback">{feedback}</p>}
+      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
 
       <section className="dashboard-hero">
         <div className="dashboard-hero-copy">
@@ -142,7 +132,7 @@ export function DashboardPage() {
         </div>
         <div className="dashboard-note">
           <strong>Curadoria viva</strong>
-          <span>Abra qualquer box para entrar direto no clube. Menos intermediarios, mais continuidade na leitura.</span>
+          <span>Use o link no nome de cada clube para abrir seus detalhes. Menos intermediarios, mais continuidade na leitura.</span>
         </div>
       </section>
 
@@ -159,16 +149,9 @@ export function DashboardPage() {
           ) : myClubs.length ? (
             <div className="item-list">
               {myClubs.map((club) => (
-                <article
-                  className="resource-card clickable-card"
-                  key={club.id}
-                  role="link"
-                  tabIndex={0}
-                  onClick={(event) => handleClubCardClick(event, club.id)}
-                  onKeyDown={(event) => handleClubCardKeyDown(event, club.id)}
-                >
+                <article className="resource-card" key={club.id}>
                   <div className="resource-main">
-                    <h3>{club.name}</h3>
+                    <h3><Link className="card-title-link" to={`/clubs/${club.id}`}>{club.name}</Link></h3>
                     <p>{club.description}</p>
                     <div className="resource-meta">
                       <span>{club.member_count} participante(s)</span>
@@ -178,7 +161,8 @@ export function DashboardPage() {
                   </div>
                   <div className="card-actions">
                     <button
-                      aria-label={club.is_favorite ? "Remover clube dos favoritos" : "Favoritar clube"}
+                      aria-label={club.is_favorite ? `Remover ${club.name} dos favoritos` : `Favoritar ${club.name}`}
+                      aria-pressed={club.is_favorite}
                       className={`favorite-toggle ${club.is_favorite ? "active" : ""}`}
                       title={club.is_favorite ? "Remover favorito" : "Favoritar"}
                       type="button"
@@ -210,16 +194,9 @@ export function DashboardPage() {
           ) : availableClubs.length ? (
             <div className="item-list">
               {availableClubs.map((club) => (
-                <article
-                  className="resource-card clickable-card"
-                  key={club.id}
-                  role="link"
-                  tabIndex={0}
-                  onClick={(event) => handleClubCardClick(event, club.id)}
-                  onKeyDown={(event) => handleClubCardKeyDown(event, club.id)}
-                >
+                <article className="resource-card" key={club.id}>
                   <div className="resource-main">
-                    <h3>{club.name}</h3>
+                    <h3><Link className="card-title-link" to={`/clubs/${club.id}`}>{club.name}</Link></h3>
                     <p>{club.description}</p>
                     <div className="resource-meta">
                       <span>{club.member_count} participante(s)</span>
@@ -228,7 +205,8 @@ export function DashboardPage() {
                   </div>
                   <div className="card-actions">
                     <button
-                      aria-label={club.is_favorite ? "Remover clube dos favoritos" : "Favoritar clube"}
+                      aria-label={club.is_favorite ? `Remover ${club.name} dos favoritos` : `Favoritar ${club.name}`}
+                      aria-pressed={club.is_favorite}
                       className={`favorite-toggle ${club.is_favorite ? "active" : ""}`}
                       title={club.is_favorite ? "Remover favorito" : "Favoritar"}
                       type="button"

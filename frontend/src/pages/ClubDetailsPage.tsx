@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
+import type { FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ActionMenu } from "../components/ActionMenu";
 import { Modal } from "../components/Modal";
 import { useAuth } from "../contexts/AuthContext";
 import { bookService, clubService, getErrorMessage, meetingService } from "../services/api";
 import type { Book, Club, ClubMember, Meeting, ReadingStatus } from "../types";
-import { formatMeetingDateTime, getMeetingDetailsPath, isInteractiveElementTarget } from "../utils/meetings";
+import { formatMeetingDateTime, getMeetingDetailsPath } from "../utils/meetings";
 
 const statusLabel: Record<ReadingStatus, string> = {
   planejado: "Planejado",
@@ -160,46 +160,14 @@ export function ClubDetailsPage() {
     try {
       const updatedClub = club.is_favorite ? await clubService.unfavorite(club.id) : await clubService.favorite(club.id);
       setClub(updatedClub);
-      setFeedback(updatedClub.is_favorite ? "Clube favoritado." : "Clube removido dos favoritos.");
+      setFeedback(
+        updatedClub.is_favorite
+          ? `${updatedClub.name} adicionado aos favoritos.`
+          : `${updatedClub.name} removido dos favoritos.`,
+      );
     } catch (err) {
       setFeedback(getErrorMessage(err));
     }
-  }
-
-  function handleMeetingCardClick(event: MouseEvent<HTMLElement>, meetingDetailsPath: string) {
-    if (isInteractiveElementTarget(event.target)) return;
-    navigate(meetingDetailsPath);
-  }
-
-  function handleMeetingCardKeyDown(event: KeyboardEvent<HTMLElement>, meetingDetailsPath: string) {
-    if (event.target !== event.currentTarget) return;
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    navigate(meetingDetailsPath);
-  }
-
-  function handleBookCardClick(event: MouseEvent<HTMLElement>, bookId: number) {
-    if (isInteractiveElementTarget(event.target)) return;
-    navigate(`/books/${bookId}`);
-  }
-
-  function handleBookCardKeyDown(event: KeyboardEvent<HTMLElement>, bookId: number) {
-    if (event.target !== event.currentTarget) return;
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    navigate(`/books/${bookId}`);
-  }
-
-  function handlePanelNavigation(event: MouseEvent<HTMLElement>, path: string) {
-    if (isInteractiveElementTarget(event.target)) return;
-    navigate(path);
-  }
-
-  function handlePanelNavigationKeyDown(event: KeyboardEvent<HTMLElement>, path: string) {
-    if (event.target !== event.currentTarget) return;
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    navigate(path);
   }
 
   if (isLoading) {
@@ -219,7 +187,8 @@ export function ClubDetailsPage() {
             <h1>{club.name}</h1>
             <div className="inline-actions">
               <button
-                aria-label={club.is_favorite ? "Remover clube dos favoritos" : "Favoritar clube"}
+                aria-label={club.is_favorite ? `Remover ${club.name} dos favoritos` : `Favoritar ${club.name}`}
+                aria-pressed={club.is_favorite}
                 className={`favorite-toggle ${club.is_favorite ? "active" : ""}`}
                 title={club.is_favorite ? "Remover favorito" : "Favoritar"}
                 type="button"
@@ -255,20 +224,14 @@ export function ClubDetailsPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback">{feedback}</p>}
+      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
 
       <section className="content-grid workspace-grid">
         <section className="workspace-panel club-summary-panel">
           <h2>📚 Livro atual</h2>
           {currentBook ? (
-            <article
-              className="compact-card clickable-card"
-              role="link"
-              tabIndex={0}
-              onClick={(event) => handleBookCardClick(event, currentBook.id)}
-              onKeyDown={(event) => handleBookCardKeyDown(event, currentBook.id)}
-            >
-              <h3>{currentBook.title}</h3>
+            <article className="compact-card">
+              <h3><Link className="card-title-link" to={`/books/${currentBook.id}`}>{currentBook.title}</Link></h3>
               <p>{currentBook.author}</p>
               <span className="meta-label">{statusLabel[currentBook.status]}</span>
             </article>
@@ -283,14 +246,8 @@ export function ClubDetailsPage() {
         <section className="workspace-panel club-summary-panel">
           <h2>📍 Próximo encontro</h2>
           {nextMeeting ? (
-            <article
-              className="compact-card clickable-card"
-              role="link"
-              tabIndex={0}
-              onClick={(event) => handleMeetingCardClick(event, getMeetingDetailsPath(nextMeeting.club_id, nextMeeting.id))}
-              onKeyDown={(event) => handleMeetingCardKeyDown(event, getMeetingDetailsPath(nextMeeting.club_id, nextMeeting.id))}
-            >
-              <h3>{nextMeeting.title}</h3>
+            <article className="compact-card">
+              <h3><Link className="card-title-link" to={getMeetingDetailsPath(nextMeeting.club_id, nextMeeting.id)}>{nextMeeting.title}</Link></h3>
               <p>{formatMeetingDateTime(nextMeeting.scheduled_for)}</p>
               <span className="meta-label">{nextMeeting.location || "Local a definir"}</span>
               <span className="meta-label">{nextMeeting.attendee_count} presença(s) confirmada(s)</span>
@@ -316,25 +273,20 @@ export function ClubDetailsPage() {
           </div>
         </section>
 
-        <section
-          className="workspace-panel wide-panel clickable-card"
-          role="link"
-          tabIndex={0}
-          onClick={(event) => handlePanelNavigation(event, `/clubs/${club.id}/books`)}
-          onKeyDown={(event) => handlePanelNavigationKeyDown(event, `/clubs/${club.id}/books`)}
-        >
+        <section className="workspace-panel wide-panel">
           <div className="section-header compact">
             <div>
               <h2>📚 Livros do clube</h2>
-              <p>Resumo das leituras do clube. Clique no box para abrir a página exclusiva dos livros.</p>
+              <p>Resumo das leituras do clube.</p>
             </div>
+            <Link className="button-link secondary" to={`/clubs/${club.id}/books`}>Ver todos os livros</Link>
           </div>
           {orderedBooks.length ? (
             <div className="item-list scroll-list long-list">
               {orderedBooks.map((book) => (
                 <article className="resource-card" key={book.id}>
                   <div className="resource-main">
-                    <h3>{book.title}</h3>
+                    <h3><Link className="card-title-link" to={`/books/${book.id}`}>{book.title}</Link></h3>
                     <p>{book.author}</p>
                     <div className="resource-meta">
                       {book.status === "concluido" && book.finished_at ? (
@@ -360,25 +312,20 @@ export function ClubDetailsPage() {
           )}
         </section>
 
-        <section
-          className="workspace-panel wide-panel clickable-card"
-          role="link"
-          tabIndex={0}
-          onClick={(event) => handlePanelNavigation(event, `/clubs/${club.id}/meetings`)}
-          onKeyDown={(event) => handlePanelNavigationKeyDown(event, `/clubs/${club.id}/meetings`)}
-        >
+        <section className="workspace-panel wide-panel">
           <div className="section-header compact">
             <div>
               <h2>📍 Encontros</h2>
-              <p>Todos os encontros do clube. Clique no box para abrir a página exclusiva dos encontros.</p>
+              <p>Todos os encontros do clube.</p>
             </div>
+            <Link className="button-link secondary" to={`/clubs/${club.id}/meetings`}>Ver todos os encontros</Link>
           </div>
           {orderedMeetingsDesc.length ? (
             <div className="item-list scroll-list long-list">
               {orderedMeetingsDesc.map((meeting) => (
                 <article className="resource-card" key={meeting.id}>
                   <div className="resource-main">
-                    <h3>{meeting.title}</h3>
+                    <h3><Link className="card-title-link" to={getMeetingDetailsPath(meeting.club_id, meeting.id)}>{meeting.title}</Link></h3>
                     <p>{formatMeetingDateTime(meeting.scheduled_for)}</p>
                     <div className="resource-meta">
                       <span>{meeting.location || "Local a definir"}</span>

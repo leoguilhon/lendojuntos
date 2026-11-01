@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import type { FormEvent } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Modal } from "../components/Modal";
 import { bookService, clubService, getErrorMessage } from "../services/api";
 import type { Book, Club, ReadingStatus } from "../types";
-import { isInteractiveElementTarget } from "../utils/meetings";
 
 const statusLabel: Record<ReadingStatus, string> = {
   planejado: "Planejado",
@@ -20,7 +19,6 @@ const statusOrder: Record<ReadingStatus, number> = {
 
 export function ClubBooksPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [club, setClub] = useState<Club | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [title, setTitle] = useState("");
@@ -78,7 +76,11 @@ export function ClubBooksPage() {
     try {
       const updatedBook = book.liked_by_current_user ? await bookService.unlike(book.id) : await bookService.like(book.id);
       setBooks((current) => current.map((item) => (item.id === book.id ? updatedBook : item)));
-      setFeedback(updatedBook.liked_by_current_user ? "Livro curtido." : "Like removido do livro.");
+      setFeedback(
+        updatedBook.liked_by_current_user
+          ? `${updatedBook.title} curtido.`
+          : `Curtida removida de ${updatedBook.title}.`,
+      );
     } catch (err) {
       setFeedback(getErrorMessage(err));
     }
@@ -102,18 +104,6 @@ export function ClubBooksPage() {
     } catch (err) {
       setFeedback(getErrorMessage(err));
     }
-  }
-
-  function handleBookCardClick(event: MouseEvent<HTMLElement>, bookId: number) {
-    if (isInteractiveElementTarget(event.target)) return;
-    navigate(`/books/${bookId}`);
-  }
-
-  function handleBookCardKeyDown(event: KeyboardEvent<HTMLElement>, bookId: number) {
-    if (event.target !== event.currentTarget) return;
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    navigate(`/books/${bookId}`);
   }
 
   if (isLoading) {
@@ -146,7 +136,7 @@ export function ClubBooksPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback">{feedback}</p>}
+      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
 
       <section className="workspace-panel wide-panel">
         <div className="section-header compact">
@@ -159,16 +149,9 @@ export function ClubBooksPage() {
         {orderedBooks.length ? (
           <div className="item-list scroll-list long-list">
             {orderedBooks.map((book) => (
-              <article
-                className="resource-card clickable-card"
-                key={book.id}
-                role="link"
-                tabIndex={0}
-                onClick={(event) => handleBookCardClick(event, book.id)}
-                onKeyDown={(event) => handleBookCardKeyDown(event, book.id)}
-              >
+              <article className="resource-card" key={book.id}>
                 <div className="resource-main">
-                  <h3>{book.title}</h3>
+                  <h3><Link className="card-title-link" to={`/books/${book.id}`}>{book.title}</Link></h3>
                   <p>{book.author}</p>
                   <div className="resource-meta">
                     {book.status === "concluido" && book.finished_at ? (
@@ -181,7 +164,8 @@ export function ClubBooksPage() {
                 <div className="card-actions">
                   <div className="like-control">
                     <button
-                      aria-label={book.liked_by_current_user ? "Remover like do livro" : "Curtir livro"}
+                      aria-label={book.liked_by_current_user ? `Remover curtida de ${book.title}` : `Curtir ${book.title}`}
+                      aria-pressed={book.liked_by_current_user}
                       className={`like-toggle ${book.liked_by_current_user ? "active" : ""}`}
                       title={book.liked_by_current_user ? "Remover like" : "Curtir"}
                       type="button"

@@ -1,14 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import type { FormEvent } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Modal } from "../components/Modal";
 import { bookService, clubService, getErrorMessage, meetingService } from "../services/api";
 import type { Book, Club, Meeting } from "../types";
-import { formatMeetingDay, formatMeetingTime, getMeetingDetailsPath, isInteractiveElementTarget } from "../utils/meetings";
+import { formatMeetingDay, formatMeetingTime, getMeetingDetailsPath } from "../utils/meetings";
 
 export function MeetingsPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [club, setClub] = useState<Club | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
@@ -103,34 +102,15 @@ export function MeetingsPage() {
     }
   }
 
-  function handleMeetingCardClick(event: MouseEvent<HTMLElement>, meetingDetailsPath: string) {
-    if (isInteractiveElementTarget(event.target)) return;
-    navigate(meetingDetailsPath);
-  }
-
-  function handleMeetingCardKeyDown(event: KeyboardEvent<HTMLElement>, meetingDetailsPath: string) {
-    if (event.target !== event.currentTarget) return;
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    navigate(meetingDetailsPath);
-  }
-
   function renderMeetingCard(meeting: Meeting) {
     const meetingDetailsPath = getMeetingDetailsPath(meeting.club_id, meeting.id);
 
     return (
-      <article
-        className="meeting-card clickable-card"
-        key={meeting.id}
-        role="link"
-        tabIndex={0}
-        onClick={(event) => handleMeetingCardClick(event, meetingDetailsPath)}
-        onKeyDown={(event) => handleMeetingCardKeyDown(event, meetingDetailsPath)}
-      >
+      <article className="meeting-card" key={meeting.id}>
         <div className="meeting-card-header">
           <div>
             <span className="status-pill">{meeting.scheduled_for >= currentTime ? "Próximo" : "Realizado"}</span>
-            <h3>{meeting.title}</h3>
+            <h3><Link className="card-title-link" to={meetingDetailsPath}>{meeting.title}</Link></h3>
             <div className="meeting-schedule">
               <span>📅 {formatMeetingDay(meeting.scheduled_for)}</span>
               <span>⏰ {formatMeetingTime(meeting.scheduled_for)}</span>
@@ -188,7 +168,7 @@ export function MeetingsPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback">{feedback}</p>}
+      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
 
       {!isAdmin && (
         <div className="notice-box page-feedback">

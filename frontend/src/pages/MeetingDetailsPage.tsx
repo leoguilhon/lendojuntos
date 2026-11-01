@@ -171,7 +171,7 @@ export function MeetingDetailsPage() {
   }
 
   async function handleAttendanceToggle() {
-    if (!meetingId || !meeting) return;
+    if (!meetingId || !meeting || isUpdatingAttendance) return;
 
     setFeedback("");
     setIsUpdatingAttendance(true);
@@ -181,7 +181,11 @@ export function MeetingDetailsPage() {
         : await meetingService.confirmAttendance(meetingId);
       setAttendees(updatedAttendees);
       setMeeting((current) => (current ? { ...current, attendee_count: updatedAttendees.length } : current));
-      setFeedback(isAttendanceConfirmed ? "Confirmação de presença removida." : "Presença confirmada para o encontro.");
+      setFeedback(
+        isAttendanceConfirmed
+          ? `Presença removida de ${meeting.title}.`
+          : `Presença confirmada em ${meeting.title}.`,
+      );
     } catch (err) {
       setFeedback(getErrorMessage(err));
     } finally {
@@ -224,7 +228,7 @@ export function MeetingDetailsPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback">{feedback}</p>}
+      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
 
       <section className="stack-layout">
         <section className="workspace-panel focus-panel">
@@ -263,7 +267,14 @@ export function MeetingDetailsPage() {
               <h2>👥 Presenças confirmadas</h2>
               <p>Confirme sua participação e veja quem já sinalizou presença no encontro.</p>
             </div>
-            <button type="button" onClick={handleAttendanceToggle} disabled={isUpdatingAttendance}>
+            <button
+              aria-label={isAttendanceConfirmed ? `Cancelar presença em ${meeting.title}` : `Confirmar presença em ${meeting.title}`}
+              aria-busy={isUpdatingAttendance}
+              aria-disabled={isUpdatingAttendance}
+              aria-pressed={isAttendanceConfirmed}
+              type="button"
+              onClick={handleAttendanceToggle}
+            >
               {isUpdatingAttendance
                 ? "Salvando..."
                 : isAttendanceConfirmed

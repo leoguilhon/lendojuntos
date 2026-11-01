@@ -2,10 +2,6 @@ export function getMeetingDetailsPath(clubId: string | number, meetingId: string
   return `/clubs/${clubId}/meetings/${meetingId}`;
 }
 
-export function isInteractiveElementTarget(target: EventTarget | null) {
-  return target instanceof HTMLElement && Boolean(target.closest("a, button, input, textarea, select"));
-}
-
 export function formatMeetingDateTime(value: string) {
   return new Date(value).toLocaleString("pt-BR", {
     dateStyle: "short",

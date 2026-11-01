@@ -113,7 +113,8 @@ button:active,
   transform: translateY(0);
 }
 
-button:disabled {
+button:disabled,
+button[aria-disabled="true"] {
   cursor: not-allowed;
   border-color: var(--color-line);
   background: var(--color-surface-muted);
@@ -863,19 +864,10 @@ p {
   margin-top: 6px;
 }
 
-.clickable-card {
-  cursor: pointer;
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease,
-    transform 180ms var(--ease-standard),
-    background-color 180ms ease;
-}
-
-.clickable-card:hover {
-  border-color: rgb(23 76 60 / 30%);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+.card-title-link {
+  text-decoration: underline;
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.18em;
 }
 
 .list-card p,
@@ -1039,6 +1031,25 @@ p {
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-top: 24px;
+}
+
+.reading-status-group {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0 0;
+  border: 0;
+  padding: 0;
+}
+
+.reading-status-group legend {
+  margin-bottom: 12px;
+  color: var(--color-forest);
+  font-weight: 800;
+}
+
+.reading-status-group p {
+  margin: 0;
+  color: var(--color-text-soft);
 }
 
 .segmented-control button {

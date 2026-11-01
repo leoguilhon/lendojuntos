@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import type { FormEvent } from "react";
+import { Link, useParams } from "react-router-dom";
 import { AutoResizeTextarea } from "../components/AutoResizeTextarea";
 import { bookService, clubService, getErrorMessage } from "../services/api";
 import type { Book, ClubRole, Comment, Meeting, ReadingStatus } from "../types";
-import { formatMeetingDateTime, getMeetingDetailsPath, isInteractiveElementTarget } from "../utils/meetings";
+import { formatMeetingDateTime, getMeetingDetailsPath } from "../utils/meetings";
 
 const statusLabel: Record<ReadingStatus, string> = {
   planejado: "Planejado",
@@ -14,7 +14,6 @@ const statusLabel: Record<ReadingStatus, string> = {
 
 export function BookDetailsPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [book, setBook] = useState<Book | null>(null);
   const [clubRole, setClubRole] = useState<ClubRole | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -63,8 +62,9 @@ export function BookDetailsPage() {
     if (!id || clubRole !== "admin") return;
     setFeedback("");
     try {
-      setBook(await bookService.updateStatus(id, status));
-      setFeedback("Situação da leitura atualizada.");
+      const updatedBook = await bookService.updateStatus(id, status);
+      setBook(updatedBook);
+      setFeedback(`Situação de ${updatedBook.title} alterada para ${statusLabel[updatedBook.status]}.`);
     } catch (err) {
       setFeedback(getErrorMessage(err));
     }
@@ -94,22 +94,14 @@ export function BookDetailsPage() {
     try {
       const updatedBook = book.liked_by_current_user ? await bookService.unlike(book.id) : await bookService.like(book.id);
       setBook(updatedBook);
-      setFeedback(updatedBook.liked_by_current_user ? "Livro curtido." : "Like removido do livro.");
+      setFeedback(
+        updatedBook.liked_by_current_user
+          ? `${updatedBook.title} curtido.`
+          : `Curtida removida de ${updatedBook.title}.`,
+      );
     } catch (err) {
       setFeedback(getErrorMessage(err));
     }
-  }
-
-  function handleMeetingCardClick(event: MouseEvent<HTMLElement>, meetingDetailsPath: string) {
-    if (isInteractiveElementTarget(event.target)) return;
-    navigate(meetingDetailsPath);
-  }
-
-  function handleMeetingCardKeyDown(event: KeyboardEvent<HTMLElement>, meetingDetailsPath: string) {
-    if (event.target !== event.currentTarget) return;
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    navigate(meetingDetailsPath);
   }
 
   if (isLoading) {
@@ -130,7 +122,8 @@ export function BookDetailsPage() {
             <div className="inline-actions">
               <div className="like-control">
                 <button
-                  aria-label={book.liked_by_current_user ? "Remover like do livro" : "Curtir livro"}
+                  aria-label={book.liked_by_current_user ? `Remover curtida de ${book.title}` : `Curtir ${book.title}`}
+                  aria-pressed={book.liked_by_current_user}
                   className={`like-toggle ${book.liked_by_current_user ? "active" : ""}`}
                   title={book.liked_by_current_user ? "Remover like" : "Curtir"}
                   type="button"
@@ -152,29 +145,32 @@ export function BookDetailsPage() {
         </div>
       </section>
 
-      <section className="stack-layout">
-        {clubRole === "admin" && (
-          <section className="panel">
-            <h2>Detalhes da leitura</h2>
-            <p>{book.description || "Sem descrição cadastrada."}</p>
-            {book.finished_at && <p>Leitura concluída em {new Date(book.finished_at).toLocaleDateString("pt-BR")}.</p>}
+      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
 
-            <div className="segmented-control" aria-label="Situação da leitura">
+      <section className="stack-layout">
+        <section className="panel">
+          <h2>Detalhes da leitura</h2>
+          <p>{book.description || "Sem descrição cadastrada."}</p>
+          {book.finished_at && <p>Leitura concluída em {new Date(book.finished_at).toLocaleDateString("pt-BR")}.</p>}
+
+          <fieldset className="reading-status-group" disabled={clubRole !== "admin"}>
+            <legend>Situação da leitura</legend>
+            {clubRole !== "admin" && <p>Somente administradores do clube podem alterar esta situação.</p>}
+            <div className="segmented-control">
               {(["planejado", "em_leitura", "concluido"] as ReadingStatus[]).map((status) => (
                 <button
+                  aria-pressed={book.status === status}
                   className={book.status === status ? "active" : ""}
                   key={status}
                   type="button"
                   onClick={() => handleStatusChange(status)}
                 >
-                  {statusLabel[status]}
+                  {statusLabel[status]}{book.status === status ? " — selecionado" : ""}
                 </button>
               ))}
             </div>
-
-            {feedback && <p className="feedback">{feedback}</p>}
-          </section>
-        )}
+          </fieldset>
+        </section>
 
         <section className="panel">
           <div className="section-header">
@@ -189,16 +185,9 @@ export function BookDetailsPage() {
           {meetings.length ? (
             <div className="item-list">
               {meetings.map((meeting) => (
-                <article
-                  className="list-card clickable-card"
-                  key={meeting.id}
-                  role="link"
-                  tabIndex={0}
-                  onClick={(event) => handleMeetingCardClick(event, getMeetingDetailsPath(meeting.club_id, meeting.id))}
-                  onKeyDown={(event) => handleMeetingCardKeyDown(event, getMeetingDetailsPath(meeting.club_id, meeting.id))}
-                >
+                <article className="list-card" key={meeting.id}>
                   <div>
-                    <h3>{meeting.title}</h3>
+                    <h3><Link className="card-title-link" to={getMeetingDetailsPath(meeting.club_id, meeting.id)}>{meeting.title}</Link></h3>
                     <p>{formatMeetingDateTime(meeting.scheduled_for)}</p>
                     <span>{meeting.location || "Local a definir"}</span>
                   </div>
