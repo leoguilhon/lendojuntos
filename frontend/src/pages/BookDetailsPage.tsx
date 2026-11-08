@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
-import { AutoResizeTextarea } from "../components/AutoResizeTextarea";
+import { CommentComposer } from "../components/CommentComposer";
+import { PageLoading } from "../components/PageLoading";
+import { PageFeedback } from "../components/PageFeedback";
 import { bookService, clubService, getErrorMessage } from "../services/api";
 import type { Book, ClubRole, Comment, Meeting, ReadingStatus } from "../types";
 import { formatMeetingDateTime, getMeetingDetailsPath } from "../utils/meetings";
@@ -42,7 +43,7 @@ export function BookDetailsPage() {
         setMeetings(meetingData);
       } catch (err) {
         if (isMounted) {
-          setFeedback(getErrorMessage(err));
+          setFeedback(`Erro: ${getErrorMessage(err)}`);
         }
       } finally {
         if (isMounted) {
@@ -66,25 +67,16 @@ export function BookDetailsPage() {
       setBook(updatedBook);
       setFeedback(`Situação de ${updatedBook.title} alterada para ${statusLabel[updatedBook.status]}.`);
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setFeedback(`Erro: ${getErrorMessage(err)}`);
     }
   }
 
-  async function handleAddComment(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleAddComment(content: string) {
     if (!id) return;
-    const content = comment.trim();
-    if (!content) return;
     setFeedback("");
-
-    try {
-      const newComment = await bookService.addComment(id, content);
-      setComments((current) => [...current, newComment]);
-      setComment("");
-      setFeedback("Comentário publicado no livro.");
-    } catch (err) {
-      setFeedback(getErrorMessage(err));
-    }
+    const newComment = await bookService.addComment(id, content);
+    setComments((current) => [...current, newComment]);
+    setFeedback("Comentário publicado no livro.");
   }
 
   async function handleToggleLike() {
@@ -100,16 +92,16 @@ export function BookDetailsPage() {
           : `Curtida removida de ${updatedBook.title}.`,
       );
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setFeedback(`Erro: ${getErrorMessage(err)}`);
     }
   }
 
   if (isLoading) {
-    return <main className="shell" id="conteudo-principal">Carregando livro...</main>;
+    return <PageLoading message="Carregando livro..." />;
   }
 
   if (!book) {
-    return <main className="shell" id="conteudo-principal">{feedback || "Livro não encontrado."}</main>;
+    return <main className="shell" id="conteudo-principal"><p role="alert">{feedback || "Livro não encontrado."}</p></main>;
   }
 
   return (
@@ -129,7 +121,7 @@ export function BookDetailsPage() {
                   type="button"
                   onClick={handleToggleLike}
                 >
-                  {book.liked_by_current_user ? "♥" : "♡"}
+                  <span className="toggle-glyph" aria-hidden="true" />
                 </button>
                 <span>{book.like_count}</span>
               </div>
@@ -145,7 +137,7 @@ export function BookDetailsPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
+      <PageFeedback message={feedback} />
 
       <section className="stack-layout">
         <section className="panel">
@@ -230,18 +222,13 @@ export function BookDetailsPage() {
             </div>
           )}
 
-          <form className="comment-form" onSubmit={handleAddComment}>
-            <label>
-              Novo comentário
-              <AutoResizeTextarea
-                value={comment}
-                onChange={(event) => setComment(event.target.value)}
-                placeholder="Compartilhe um ponto da leitura para o clube discutir."
-                required
-              />
-            </label>
-            <button type="submit">Publicar comentário</button>
-          </form>
+          <CommentComposer
+            idPrefix="book-comment"
+            value={comment}
+            onChange={setComment}
+            onPublish={handleAddComment}
+            placeholder="Compartilhe um ponto da leitura para o clube discutir."
+          />
         </section>
       </section>
     </main>

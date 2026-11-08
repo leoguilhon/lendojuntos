@@ -1,11 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { PageLoading } from "./PageLoading";
 
 export function ProtectedRoute() {
   const { token, isLoading } = useAuth();
 
   if (isLoading) {
-    return <main className="shell" id="conteudo-principal">Carregando...</main>;
+    return <PageLoading message="Carregando sua sessão..." />;
   }
 
   return token ? <Outlet /> : <Navigate to="/" replace />;

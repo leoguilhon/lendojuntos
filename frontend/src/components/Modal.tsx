@@ -114,7 +114,7 @@ export function Modal({ title, isOpen, onClose, children }: ModalProps) {
             type="button"
             onClick={() => onCloseRef.current()}
           >
-            <span aria-hidden="true">×</span>
+            <span className="close-glyph" aria-hidden="true" />
           </button>
         </div>
         {children}

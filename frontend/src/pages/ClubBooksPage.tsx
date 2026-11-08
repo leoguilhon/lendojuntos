@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Modal } from "../components/Modal";
+import { PageLoading } from "../components/PageLoading";
+import { PageFeedback } from "../components/PageFeedback";
 import { bookService, clubService, getErrorMessage } from "../services/api";
 import type { Book, Club, ReadingStatus } from "../types";
 
@@ -28,6 +30,9 @@ export function ClubBooksPage() {
   const [feedback, setFeedback] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
+  const [bookFormError, setBookFormError] = useState("");
+  const [bookErrors, setBookErrors] = useState<{ title?: string; author?: string }>({});
+  const [isCreatingBook, setIsCreatingBook] = useState(false);
 
   const isAdmin = club?.current_user_role === "admin";
 
@@ -54,7 +59,7 @@ export function ClubBooksPage() {
         setBooks(bookData);
       } catch (err) {
         if (isMounted) {
-          setFeedback(getErrorMessage(err));
+          setFeedback(`Erro: ${getErrorMessage(err)}`);
         }
       } finally {
         if (isMounted) {
@@ -82,14 +87,27 @@ export function ClubBooksPage() {
           : `Curtida removida de ${updatedBook.title}.`,
       );
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setFeedback(`Erro: ${getErrorMessage(err)}`);
     }
   }
 
   async function handleCreateBook(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!id) return;
+    const nextErrors = {
+      title: title.trim() ? undefined : "Informe o título do livro.",
+      author: author.trim() ? undefined : "Informe o nome do autor ou autora.",
+    };
+    if (nextErrors.title || nextErrors.author) {
+      setBookErrors(nextErrors);
+      const fieldName = nextErrors.title ? "title" : "author";
+      (event.currentTarget.elements.namedItem(fieldName) as HTMLElement | null)?.focus();
+      return;
+    }
     setFeedback("");
+    setBookErrors({});
+    setBookFormError("");
+    setIsCreatingBook(true);
 
     try {
       await bookService.create(id, { title, author, description, status });
@@ -102,16 +120,18 @@ export function ClubBooksPage() {
       setFeedback("Livro cadastrado no clube.");
       setIsBookModalOpen(false);
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setBookFormError(getErrorMessage(err));
+    } finally {
+      setIsCreatingBook(false);
     }
   }
 
   if (isLoading) {
-    return <main className="shell" id="conteudo-principal">Carregando livros...</main>;
+    return <PageLoading message="Carregando livros..." />;
   }
 
   if (!club) {
-    return <main className="shell" id="conteudo-principal">{feedback || "Clube não encontrado."}</main>;
+    return <main className="shell" id="conteudo-principal"><p role="alert">{feedback || "Clube não encontrado."}</p></main>;
   }
 
   return (
@@ -123,7 +143,7 @@ export function ClubBooksPage() {
             <h1>Livros do {club.name}</h1>
             <div className="inline-actions">
               {isAdmin && (
-                <button type="button" onClick={() => setIsBookModalOpen(true)}>
+                <button type="button" onClick={() => { setBookFormError(""); setBookErrors({}); setIsBookModalOpen(true); }}>
                   📚 Cadastrar livro
                 </button>
               )}
@@ -136,7 +156,7 @@ export function ClubBooksPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
+      <PageFeedback message={feedback} />
 
       <section className="workspace-panel wide-panel">
         <div className="section-header compact">
@@ -171,7 +191,7 @@ export function ClubBooksPage() {
                       type="button"
                       onClick={() => handleToggleBookLike(book)}
                     >
-                      {book.liked_by_current_user ? "♥" : "♡"}
+                      <span className="toggle-glyph" aria-hidden="true" />
                     </button>
                     <span>{book.like_count}</span>
                   </div>
@@ -188,15 +208,17 @@ export function ClubBooksPage() {
       </section>
 
       <Modal title="Cadastrar livro" isOpen={isBookModalOpen} onClose={() => setIsBookModalOpen(false)}>
-        <form onSubmit={handleCreateBook}>
-          <label>
-            Título
-            <input value={title} onChange={(event) => setTitle(event.target.value)} required />
-          </label>
-          <label>
-            Autor
-            <input value={author} onChange={(event) => setAuthor(event.target.value)} required />
-          </label>
+        <form onSubmit={handleCreateBook} aria-busy={isCreatingBook} noValidate>
+          <div className="form-field">
+            <label htmlFor="create-book-title">Título</label>
+            <input id="create-book-title" name="title" value={title} onChange={(event) => { setTitle(event.target.value); setBookErrors((current) => ({ ...current, title: undefined })); }} aria-invalid={Boolean(bookErrors.title)} aria-describedby={bookErrors.title ? "create-book-title-error" : undefined} />
+            {bookErrors.title && <p className="field-error" id="create-book-title-error">{bookErrors.title}</p>}
+          </div>
+          <div className="form-field">
+            <label htmlFor="create-book-author">Autor</label>
+            <input id="create-book-author" name="author" value={author} onChange={(event) => { setAuthor(event.target.value); setBookErrors((current) => ({ ...current, author: undefined })); }} aria-invalid={Boolean(bookErrors.author)} aria-describedby={bookErrors.author ? "create-book-author-error" : undefined} />
+            {bookErrors.author && <p className="field-error" id="create-book-author-error">{bookErrors.author}</p>}
+          </div>
           <label>
             Descrição
             <textarea value={description} onChange={(event) => setDescription(event.target.value)} />
@@ -209,11 +231,12 @@ export function ClubBooksPage() {
               <option value="concluido">Concluído</option>
             </select>
           </label>
+          {bookFormError && <p className="feedback error form-alert" role="alert">{bookFormError}</p>}
           <div className="form-actions">
             <button className="ghost-button" type="button" onClick={() => setIsBookModalOpen(false)}>
               Cancelar
             </button>
-            <button type="submit">Cadastrar livro</button>
+            <button type="submit" disabled={isCreatingBook}>{isCreatingBook ? "Cadastrando..." : "Cadastrar livro"}</button>
           </div>
         </form>
       </Modal>

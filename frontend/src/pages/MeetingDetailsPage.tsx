@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ActionMenu } from "../components/ActionMenu";
-import { AutoResizeTextarea } from "../components/AutoResizeTextarea";
+import { CommentComposer } from "../components/CommentComposer";
 import { Modal } from "../components/Modal";
+import { PageLoading } from "../components/PageLoading";
+import { PageFeedback } from "../components/PageFeedback";
 import { useAuth } from "../contexts/AuthContext";
 import { bookService, clubService, getErrorMessage, meetingService } from "../services/api";
 import type { Book, Club, Comment, Meeting, MeetingAttendee } from "../types";
@@ -38,6 +40,8 @@ export function MeetingDetailsPage() {
   const [isDeleteMeetingModalOpen, setIsDeleteMeetingModalOpen] = useState(false);
   const [isSavingMeeting, setIsSavingMeeting] = useState(false);
   const [isDeletingMeeting, setIsDeletingMeeting] = useState(false);
+  const [editMeetingError, setEditMeetingError] = useState("");
+  const [editMeetingErrors, setEditMeetingErrors] = useState<{ title?: string; scheduledFor?: string }>({});
 
   const isAdmin = club?.current_user_role === "admin";
   const isUpcoming = useMemo(() => {
@@ -88,7 +92,7 @@ export function MeetingDetailsPage() {
         syncMeetingDrafts(meetingData);
       } catch (err) {
         if (isMounted) {
-          setFeedback(getErrorMessage(err));
+          setFeedback(`Erro: ${getErrorMessage(err)}`);
         }
       } finally {
         if (isMounted) {
@@ -107,14 +111,28 @@ export function MeetingDetailsPage() {
   function handleOpenEditMeetingModal() {
     if (!meeting) return;
     syncMeetingDrafts(meeting);
+    setEditMeetingError("");
+    setEditMeetingErrors({});
     setIsEditMeetingModalOpen(true);
   }
 
   async function handleUpdateMeeting(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!meeting || !meetingId) return;
+    const nextErrors = {
+      title: meetingTitleDraft.trim() ? undefined : "Informe o título do encontro.",
+      scheduledFor: meetingScheduledForDraft ? undefined : "Informe a data e a hora do encontro.",
+    };
+    if (nextErrors.title || nextErrors.scheduledFor) {
+      setEditMeetingErrors(nextErrors);
+      const fieldName = nextErrors.title ? "title" : "scheduledFor";
+      (event.currentTarget.elements.namedItem(fieldName) as HTMLElement | null)?.focus();
+      return;
+    }
 
     setFeedback("");
+    setEditMeetingErrors({});
+    setEditMeetingError("");
     setIsSavingMeeting(true);
     try {
       const updatedMeeting = await meetingService.update(meetingId, {
@@ -129,7 +147,7 @@ export function MeetingDetailsPage() {
       setFeedback("Encontro atualizado.");
       setIsEditMeetingModalOpen(false);
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setEditMeetingError(getErrorMessage(err));
     } finally {
       setIsSavingMeeting(false);
     }
@@ -144,30 +162,20 @@ export function MeetingDetailsPage() {
       await meetingService.remove(meetingId);
       navigate(`/clubs/${club.id}/meetings`, { replace: true });
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setFeedback(`Erro: ${getErrorMessage(err)}`);
       setIsDeleteMeetingModalOpen(false);
     } finally {
       setIsDeletingMeeting(false);
     }
   }
 
-  async function handleAddComment(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleAddComment(content: string) {
     if (!meeting || !meetingId) return;
-
-    const content = comment.trim();
-    if (!content) return;
-
     setFeedback("");
-    try {
-      const createdComment = await meetingService.addComment(meetingId, content);
-      setComments((current) => [...current, createdComment]);
-      setMeeting((current) => (current ? { ...current, comment_count: current.comment_count + 1 } : current));
-      setComment("");
-      setFeedback("Comentário publicado no encontro.");
-    } catch (err) {
-      setFeedback(getErrorMessage(err));
-    }
+    const createdComment = await meetingService.addComment(meetingId, content);
+    setComments((current) => [...current, createdComment]);
+    setMeeting((current) => (current ? { ...current, comment_count: current.comment_count + 1 } : current));
+    setFeedback("Comentário publicado no encontro.");
   }
 
   async function handleAttendanceToggle() {
@@ -187,18 +195,18 @@ export function MeetingDetailsPage() {
           : `Presença confirmada em ${meeting.title}.`,
       );
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setFeedback(`Erro: ${getErrorMessage(err)}`);
     } finally {
       setIsUpdatingAttendance(false);
     }
   }
 
   if (isLoading) {
-    return <main className="shell" id="conteudo-principal">Carregando encontro...</main>;
+    return <PageLoading message="Carregando encontro..." />;
   }
 
   if (!club || !meeting) {
-    return <main className="shell" id="conteudo-principal">{feedback || "Encontro não encontrado."}</main>;
+    return <main className="shell" id="conteudo-principal"><p role="alert">{feedback || "Encontro não encontrado."}</p></main>;
   }
 
   return (
@@ -228,7 +236,7 @@ export function MeetingDetailsPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
+      <PageFeedback message={feedback} />
 
       <section className="stack-layout">
         <section className="workspace-panel focus-panel">
@@ -328,36 +336,36 @@ export function MeetingDetailsPage() {
             </div>
           )}
 
-          <form className="comment-form" onSubmit={handleAddComment}>
-            <label>
-              Novo comentário
-              <AutoResizeTextarea
-                value={comment}
-                onChange={(event) => setComment(event.target.value)}
-                placeholder="Registre uma decisão, impressão ou encaminhamento do encontro."
-                required
-              />
-            </label>
-            <button type="submit">Publicar comentário</button>
-          </form>
+          <CommentComposer
+            idPrefix="meeting-comment"
+            value={comment}
+            onChange={setComment}
+            onPublish={handleAddComment}
+            placeholder="Registre uma decisão, impressão ou encaminhamento do encontro."
+          />
         </section>
       </section>
 
       <Modal title="Editar encontro" isOpen={isEditMeetingModalOpen} onClose={() => setIsEditMeetingModalOpen(false)}>
-        <form onSubmit={handleUpdateMeeting}>
-          <label>
-            Título
-            <input value={meetingTitleDraft} onChange={(event) => setMeetingTitleDraft(event.target.value)} required />
-          </label>
-          <label>
-            Data e hora
+        <form onSubmit={handleUpdateMeeting} aria-busy={isSavingMeeting} noValidate>
+          <div className="form-field">
+            <label htmlFor="edit-meeting-title">Título</label>
+            <input id="edit-meeting-title" name="title" value={meetingTitleDraft} onChange={(event) => { setMeetingTitleDraft(event.target.value); setEditMeetingErrors((current) => ({ ...current, title: undefined })); }} aria-invalid={Boolean(editMeetingErrors.title)} aria-describedby={editMeetingErrors.title ? "edit-meeting-title-error" : undefined} />
+            {editMeetingErrors.title && <p className="field-error" id="edit-meeting-title-error">{editMeetingErrors.title}</p>}
+          </div>
+          <div className="form-field">
+            <label htmlFor="edit-meeting-date">Data e hora</label>
             <input
+              id="edit-meeting-date"
+              name="scheduledFor"
               type="datetime-local"
               value={meetingScheduledForDraft}
-              onChange={(event) => setMeetingScheduledForDraft(event.target.value)}
-              required
+              onChange={(event) => { setMeetingScheduledForDraft(event.target.value); setEditMeetingErrors((current) => ({ ...current, scheduledFor: undefined })); }}
+              aria-invalid={Boolean(editMeetingErrors.scheduledFor)}
+              aria-describedby={editMeetingErrors.scheduledFor ? "edit-meeting-date-error" : undefined}
             />
-          </label>
+            {editMeetingErrors.scheduledFor && <p className="field-error" id="edit-meeting-date-error">{editMeetingErrors.scheduledFor}</p>}
+          </div>
           <label>
             Local
             <input
@@ -385,6 +393,7 @@ export function MeetingDetailsPage() {
               placeholder="Defina os capítulos, decisões ou temas que devem orientar a conversa."
             />
           </label>
+          {editMeetingError && <p className="feedback error form-alert" role="alert">{editMeetingError}</p>}
           <div className="form-actions">
             <button className="ghost-button" type="button" onClick={() => setIsEditMeetingModalOpen(false)}>
               Cancelar

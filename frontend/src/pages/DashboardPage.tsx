@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { Modal } from "../components/Modal";
+import { PageFeedback } from "../components/PageFeedback";
 import { useAuth } from "../contexts/AuthContext";
 import { clubService, getErrorMessage } from "../services/api";
 import type { Club } from "../types";
@@ -14,6 +15,9 @@ export function DashboardPage() {
   const [feedback, setFeedback] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createError, setCreateError] = useState("");
+  const [createErrors, setCreateErrors] = useState<{ name?: string; description?: string }>({});
+  const [isCreating, setIsCreating] = useState(false);
   const orderedClubs = [...clubs].sort((a, b) => Number(b.is_favorite) - Number(a.is_favorite));
   const myClubs = orderedClubs.filter((club) => club.is_member);
   const availableClubs = orderedClubs.filter((club) => !club.is_member);
@@ -30,7 +34,7 @@ export function DashboardPage() {
         }
       } catch (err) {
         if (isMounted) {
-          setFeedback(getErrorMessage(err));
+          setFeedback(`Erro: ${getErrorMessage(err)}`);
         }
       } finally {
         if (isMounted) {
@@ -48,7 +52,20 @@ export function DashboardPage() {
 
   async function handleCreateClub(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const nextErrors = {
+      name: name.trim() ? undefined : "Informe o nome do clube.",
+      description: description.trim() ? undefined : "Descreva a proposta do clube.",
+    };
+    if (nextErrors.name || nextErrors.description) {
+      setCreateErrors(nextErrors);
+      const fieldName = nextErrors.name ? "name" : "description";
+      (event.currentTarget.elements.namedItem(fieldName) as HTMLElement | null)?.focus();
+      return;
+    }
     setFeedback("");
+    setCreateErrors({});
+    setCreateError("");
+    setIsCreating(true);
 
     try {
       const club = await clubService.create(name, description);
@@ -58,7 +75,9 @@ export function DashboardPage() {
       setFeedback("Clube criado com sucesso.");
       setIsCreateModalOpen(false);
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setCreateError(getErrorMessage(err));
+    } finally {
+      setIsCreating(false);
     }
   }
 
@@ -69,7 +88,7 @@ export function DashboardPage() {
       setClubs((current) => current.map((club) => (club.id === clubId ? updatedClub : club)));
       setFeedback("Ingresso no clube realizado.");
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setFeedback(`Erro: ${getErrorMessage(err)}`);
     }
   }
 
@@ -84,19 +103,22 @@ export function DashboardPage() {
           : `${updatedClub.name} removido dos favoritos.`,
       );
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setFeedback(`Erro: ${getErrorMessage(err)}`);
     }
   }
 
   return (
-    <main className="shell" id="conteudo-principal">
+    <main className="shell" id="conteudo-principal" aria-busy={isLoading}>
+      <p className="visually-hidden" role="status" aria-live="polite">
+        {isLoading ? "Carregando clubes..." : ""}
+      </p>
       <section className="page-heading page-heading-with-actions">
         <div>
           <p className="eyebrow">Area dos clubes</p>
           <div className="page-heading-row">
             <h1>Clubes do livro</h1>
             <div className="inline-actions">
-              <button type="button" onClick={() => setIsCreateModalOpen(true)}>
+              <button type="button" onClick={() => { setCreateError(""); setCreateErrors({}); setIsCreateModalOpen(true); }}>
                 Criar clube
               </button>
             </div>
@@ -119,7 +141,7 @@ export function DashboardPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
+      <PageFeedback message={feedback} />
 
       <section className="dashboard-hero">
         <div className="dashboard-hero-copy">
@@ -168,7 +190,7 @@ export function DashboardPage() {
                       type="button"
                       onClick={() => handleToggleFavorite(club)}
                     >
-                      {club.is_favorite ? "★" : "☆"}
+                      <span className="toggle-glyph" aria-hidden="true" />
                     </button>
                   </div>
                 </article>
@@ -212,7 +234,7 @@ export function DashboardPage() {
                       type="button"
                       onClick={() => handleToggleFavorite(club)}
                     >
-                      {club.is_favorite ? "★" : "☆"}
+                      <span className="toggle-glyph" aria-hidden="true" />
                     </button>
                     <button type="button" onClick={() => handleJoinClub(club.id)}>
                       Ingressar
@@ -231,20 +253,23 @@ export function DashboardPage() {
       </section>
 
       <Modal title="Criar clube" isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)}>
-        <form onSubmit={handleCreateClub}>
-          <label>
-            Nome do clube
-            <input value={name} onChange={(event) => setName(event.target.value)} required />
-          </label>
-          <label>
-            Descricao
-            <textarea value={description} onChange={(event) => setDescription(event.target.value)} required />
-          </label>
+        <form onSubmit={handleCreateClub} aria-busy={isCreating} noValidate>
+          <div className="form-field">
+            <label htmlFor="create-club-name">Nome do clube</label>
+            <input id="create-club-name" name="name" value={name} onChange={(event) => { setName(event.target.value); setCreateErrors((current) => ({ ...current, name: undefined })); }} aria-invalid={Boolean(createErrors.name)} aria-describedby={createErrors.name ? "create-club-name-error" : undefined} />
+            {createErrors.name && <p className="field-error" id="create-club-name-error">{createErrors.name}</p>}
+          </div>
+          <div className="form-field">
+            <label htmlFor="create-club-description">Descrição</label>
+            <textarea id="create-club-description" name="description" value={description} onChange={(event) => { setDescription(event.target.value); setCreateErrors((current) => ({ ...current, description: undefined })); }} aria-invalid={Boolean(createErrors.description)} aria-describedby={createErrors.description ? "create-club-description-error" : undefined} />
+            {createErrors.description && <p className="field-error" id="create-club-description-error">{createErrors.description}</p>}
+          </div>
+          {createError && <p className="feedback error form-alert" role="alert">{createError}</p>}
           <div className="form-actions">
             <button className="ghost-button" type="button" onClick={() => setIsCreateModalOpen(false)}>
               Cancelar
             </button>
-            <button type="submit">Criar clube</button>
+            <button type="submit" disabled={isCreating}>{isCreating ? "Criando..." : "Criar clube"}</button>
           </div>
         </form>
       </Modal>

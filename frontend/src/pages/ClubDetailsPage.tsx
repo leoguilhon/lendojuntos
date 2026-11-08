@@ -3,6 +3,8 @@ import type { FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ActionMenu } from "../components/ActionMenu";
 import { Modal } from "../components/Modal";
+import { PageLoading } from "../components/PageLoading";
+import { PageFeedback } from "../components/PageFeedback";
 import { useAuth } from "../contexts/AuthContext";
 import { bookService, clubService, getErrorMessage, meetingService } from "../services/api";
 import type { Book, Club, ClubMember, Meeting, ReadingStatus } from "../types";
@@ -38,6 +40,9 @@ export function ClubDetailsPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
+  const [editClubError, setEditClubError] = useState("");
+  const [editClubErrors, setEditClubErrors] = useState<{ name?: string; description?: string }>({});
+  const [isSavingClub, setIsSavingClub] = useState(false);
 
   const isAdmin = club?.current_user_role === "admin";
   const canEditClub = Boolean(club && user && club.owner_id === user.id);
@@ -85,7 +90,7 @@ export function ClubDetailsPage() {
         setCurrentTime(new Date().toISOString());
       } catch (err) {
         if (isMounted) {
-          setFeedback(getErrorMessage(err));
+          setFeedback(`Erro: ${getErrorMessage(err)}`);
         }
       } finally {
         if (isMounted) {
@@ -104,7 +109,20 @@ export function ClubDetailsPage() {
   async function handleUpdateClub(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!club) return;
+    const nextErrors = {
+      name: clubNameDraft.trim() ? undefined : "Informe o nome do clube.",
+      description: clubDescriptionDraft.trim() ? undefined : "Descreva a proposta do clube.",
+    };
+    if (nextErrors.name || nextErrors.description) {
+      setEditClubErrors(nextErrors);
+      const fieldName = nextErrors.name ? "name" : "description";
+      (event.currentTarget.elements.namedItem(fieldName) as HTMLElement | null)?.focus();
+      return;
+    }
     setFeedback("");
+    setEditClubErrors({});
+    setEditClubError("");
+    setIsSavingClub(true);
 
     try {
       const updatedClub = await clubService.update(club.id, {
@@ -117,7 +135,9 @@ export function ClubDetailsPage() {
       setFeedback("Clube atualizado.");
       setIsEditClubModalOpen(false);
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setEditClubError(getErrorMessage(err));
+    } finally {
+      setIsSavingClub(false);
     }
   }
 
@@ -130,7 +150,7 @@ export function ClubDetailsPage() {
       await clubService.remove(id);
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setFeedback(`Erro: ${getErrorMessage(err)}`);
       setIsDeleteModalOpen(false);
     } finally {
       setIsDeleting(false);
@@ -146,7 +166,7 @@ export function ClubDetailsPage() {
       await clubService.leave(id);
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setFeedback(`Erro: ${getErrorMessage(err)}`);
       setIsLeaveModalOpen(false);
     } finally {
       setIsLeaving(false);
@@ -166,16 +186,16 @@ export function ClubDetailsPage() {
           : `${updatedClub.name} removido dos favoritos.`,
       );
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setFeedback(`Erro: ${getErrorMessage(err)}`);
     }
   }
 
   if (isLoading) {
-    return <main className="shell" id="conteudo-principal">Carregando clube...</main>;
+    return <PageLoading message="Carregando clube..." />;
   }
 
   if (!club) {
-    return <main className="shell" id="conteudo-principal">{feedback || "Clube não encontrado."}</main>;
+    return <main className="shell" id="conteudo-principal"><p role="alert">{feedback || "Clube não encontrado."}</p></main>;
   }
 
   return (
@@ -194,7 +214,7 @@ export function ClubDetailsPage() {
                 type="button"
                 onClick={handleToggleFavorite}
               >
-                {club.is_favorite ? "★" : "☆"}
+                <span className="toggle-glyph" aria-hidden="true" />
               </button>
               <Link className="button-link secondary" to="/dashboard">
                 ↩️ Voltar
@@ -207,7 +227,7 @@ export function ClubDetailsPage() {
               {(canEditClub || canDeleteClub) && (
                 <ActionMenu label="Ações do clube">
                   {canEditClub && (
-                    <button type="button" onClick={() => setIsEditClubModalOpen(true)}>
+                    <button type="button" onClick={() => { setEditClubError(""); setEditClubErrors({}); setIsEditClubModalOpen(true); }}>
                       ✏️ Editar clube
                     </button>
                   )}
@@ -224,7 +244,7 @@ export function ClubDetailsPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
+      <PageFeedback message={feedback} />
 
       <section className="content-grid workspace-grid">
         <section className="workspace-panel club-summary-panel">
@@ -346,24 +366,23 @@ export function ClubDetailsPage() {
       </section>
 
       <Modal title="Editar clube" isOpen={isEditClubModalOpen} onClose={() => setIsEditClubModalOpen(false)}>
-        <form onSubmit={handleUpdateClub}>
-          <label>
-            Título
-            <input value={clubNameDraft} onChange={(event) => setClubNameDraft(event.target.value)} required />
-          </label>
-          <label>
-            Descrição
-            <textarea
-              value={clubDescriptionDraft}
-              onChange={(event) => setClubDescriptionDraft(event.target.value)}
-              required
-            />
-          </label>
+        <form onSubmit={handleUpdateClub} aria-busy={isSavingClub} noValidate>
+          <div className="form-field">
+            <label htmlFor="edit-club-name">Título</label>
+            <input id="edit-club-name" name="name" value={clubNameDraft} onChange={(event) => { setClubNameDraft(event.target.value); setEditClubErrors((current) => ({ ...current, name: undefined })); }} aria-invalid={Boolean(editClubErrors.name)} aria-describedby={editClubErrors.name ? "edit-club-name-error" : undefined} />
+            {editClubErrors.name && <p className="field-error" id="edit-club-name-error">{editClubErrors.name}</p>}
+          </div>
+          <div className="form-field">
+            <label htmlFor="edit-club-description">Descrição</label>
+            <textarea id="edit-club-description" name="description" value={clubDescriptionDraft} onChange={(event) => { setClubDescriptionDraft(event.target.value); setEditClubErrors((current) => ({ ...current, description: undefined })); }} aria-invalid={Boolean(editClubErrors.description)} aria-describedby={editClubErrors.description ? "edit-club-description-error" : undefined} />
+            {editClubErrors.description && <p className="field-error" id="edit-club-description-error">{editClubErrors.description}</p>}
+          </div>
+          {editClubError && <p className="feedback error form-alert" role="alert">{editClubError}</p>}
           <div className="form-actions">
             <button className="ghost-button" type="button" onClick={() => setIsEditClubModalOpen(false)}>
               Cancelar
             </button>
-            <button type="submit">Salvar alterações</button>
+            <button type="submit" disabled={isSavingClub}>{isSavingClub ? "Salvando..." : "Salvar alterações"}</button>
           </div>
         </form>
       </Modal>

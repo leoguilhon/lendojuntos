@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Modal } from "../components/Modal";
+import { PageLoading } from "../components/PageLoading";
+import { PageFeedback } from "../components/PageFeedback";
 import { bookService, clubService, getErrorMessage, meetingService } from "../services/api";
 import type { Book, Club, Meeting } from "../types";
 import { formatMeetingDay, formatMeetingTime, getMeetingDetailsPath } from "../utils/meetings";
@@ -20,6 +22,9 @@ export function MeetingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(() => new Date().toISOString());
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
+  const [meetingFormError, setMeetingFormError] = useState("");
+  const [meetingErrors, setMeetingErrors] = useState<{ title?: string; scheduledFor?: string }>({});
+  const [isCreatingMeeting, setIsCreatingMeeting] = useState(false);
 
   const isAdmin = club?.current_user_role === "admin";
   const upcomingMeetings = useMemo(
@@ -57,7 +62,7 @@ export function MeetingsPage() {
         setCurrentTime(new Date().toISOString());
       } catch (err) {
         if (isMounted) {
-          setFeedback(getErrorMessage(err));
+          setFeedback(`Erro: ${getErrorMessage(err)}`);
         }
       } finally {
         if (isMounted) {
@@ -76,7 +81,20 @@ export function MeetingsPage() {
   async function handleCreateMeeting(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!id) return;
+    const nextErrors = {
+      title: title.trim() ? undefined : "Informe o título do encontro.",
+      scheduledFor: scheduledFor ? undefined : "Informe a data e a hora do encontro.",
+    };
+    if (nextErrors.title || nextErrors.scheduledFor) {
+      setMeetingErrors(nextErrors);
+      const fieldName = nextErrors.title ? "title" : "scheduledFor";
+      (event.currentTarget.elements.namedItem(fieldName) as HTMLElement | null)?.focus();
+      return;
+    }
     setFeedback("");
+    setMeetingErrors({});
+    setMeetingFormError("");
+    setIsCreatingMeeting(true);
 
     try {
       const createdMeeting = await meetingService.create(id, {
@@ -98,7 +116,9 @@ export function MeetingsPage() {
       setFeedback("Encontro criado com sucesso.");
       setIsMeetingModalOpen(false);
     } catch (err) {
-      setFeedback(getErrorMessage(err));
+      setMeetingFormError(getErrorMessage(err));
+    } finally {
+      setIsCreatingMeeting(false);
     }
   }
 
@@ -133,11 +153,11 @@ export function MeetingsPage() {
   }
 
   if (isLoading) {
-    return <main className="shell" id="conteudo-principal">Carregando encontros...</main>;
+    return <PageLoading message="Carregando encontros..." />;
   }
 
   if (!club) {
-    return <main className="shell" id="conteudo-principal">{feedback || "Clube não encontrado."}</main>;
+    return <main className="shell" id="conteudo-principal"><p role="alert">{feedback || "Clube não encontrado."}</p></main>;
   }
 
   return (
@@ -150,7 +170,7 @@ export function MeetingsPage() {
             <div className="inline-actions">
               {isAdmin ? (
                 <>
-                  <button type="button" onClick={() => setIsMeetingModalOpen(true)}>
+                  <button type="button" onClick={() => { setMeetingFormError(""); setMeetingErrors({}); setIsMeetingModalOpen(true); }}>
                     📍 Criar encontro
                   </button>
                   <Link className="button-link secondary" to={`/clubs/${club.id}`}>
@@ -168,7 +188,7 @@ export function MeetingsPage() {
         </div>
       </section>
 
-      {feedback && <p className="feedback page-feedback" role="status">{feedback}</p>}
+      <PageFeedback message={feedback} />
 
       {!isAdmin && (
         <div className="notice-box page-feedback">
@@ -213,20 +233,25 @@ export function MeetingsPage() {
       </section>
 
       <Modal title="Criar encontro" isOpen={isMeetingModalOpen} onClose={() => setIsMeetingModalOpen(false)}>
-        <form onSubmit={handleCreateMeeting}>
-          <label>
-            Título
-            <input value={title} onChange={(event) => setTitle(event.target.value)} required />
-          </label>
-          <label>
-            Data e hora
+        <form onSubmit={handleCreateMeeting} aria-busy={isCreatingMeeting} noValidate>
+          <div className="form-field">
+            <label htmlFor="create-meeting-title">Título</label>
+            <input id="create-meeting-title" name="title" value={title} onChange={(event) => { setTitle(event.target.value); setMeetingErrors((current) => ({ ...current, title: undefined })); }} aria-invalid={Boolean(meetingErrors.title)} aria-describedby={meetingErrors.title ? "create-meeting-title-error" : undefined} />
+            {meetingErrors.title && <p className="field-error" id="create-meeting-title-error">{meetingErrors.title}</p>}
+          </div>
+          <div className="form-field">
+            <label htmlFor="create-meeting-date">Data e hora</label>
             <input
+              id="create-meeting-date"
+              name="scheduledFor"
               type="datetime-local"
               value={scheduledFor}
-              onChange={(event) => setScheduledFor(event.target.value)}
-              required
+              onChange={(event) => { setScheduledFor(event.target.value); setMeetingErrors((current) => ({ ...current, scheduledFor: undefined })); }}
+              aria-invalid={Boolean(meetingErrors.scheduledFor)}
+              aria-describedby={meetingErrors.scheduledFor ? "create-meeting-date-error" : undefined}
             />
-          </label>
+            {meetingErrors.scheduledFor && <p className="field-error" id="create-meeting-date-error">{meetingErrors.scheduledFor}</p>}
+          </div>
           <label>
             Local
             <input value={location} onChange={(event) => setLocation(event.target.value)} placeholder="Ex.: Google Meet, biblioteca, café" />
@@ -250,11 +275,12 @@ export function MeetingsPage() {
               placeholder="Defina os capítulos, decisões ou temas que devem orientar a conversa."
             />
           </label>
+          {meetingFormError && <p className="feedback error form-alert" role="alert">{meetingFormError}</p>}
           <div className="form-actions">
             <button className="ghost-button" type="button" onClick={() => setIsMeetingModalOpen(false)}>
               Cancelar
             </button>
-            <button type="submit">Criar encontro</button>
+            <button type="submit" disabled={isCreatingMeeting}>{isCreatingMeeting ? "Criando..." : "Criar encontro"}</button>
           </div>
         </form>
       </Modal>

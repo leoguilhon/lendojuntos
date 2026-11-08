@@ -115,6 +115,8 @@ Comandos utilizados para validacao local:
 cd frontend
 npm run lint
 npm run build
+npm run test:a11y
+npm run test:a11y:lighthouse
 ```
 
 ```powershell
@@ -151,6 +153,8 @@ python -m py_compile app\main.py
 - Semana 9 — roteiro reproduzível de validação e capturas: [docs/semana-09-validar-formularios.mjs](docs/semana-09-validar-formularios.mjs)
 - Semana 10 — implementação de cartões, links e estados acessíveis: [docs/semana-10-implementacao-cartoes-estados.md](docs/semana-10-implementacao-cartoes-estados.md)
 - Semana 10 — roteiro reproduzível de validação e capturas: [docs/semana-10-validar-cartoes-estados.mjs](docs/semana-10-validar-cartoes-estados.mjs)
+- Semana 11 — feedback, prevenção de erro e automação de acessibilidade: [docs/semana-11-feedback-automacao.md](docs/semana-11-feedback-automacao.md)
+- Semana 11 — suíte Playwright + axe reproduzível: [frontend/tests/a11y.spec.ts](frontend/tests/a11y.spec.ts)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP
