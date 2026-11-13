@@ -113,6 +113,58 @@ test("T01 e T02 — autenticação", async ({ page }, testInfo) => {
   await scan(page, testInfo, "t02-cadastro");
 });
 
+test("Semana 12 — painel global e preferências persistentes", async ({ page }, testInfo) => {
+  await mockApi(page);
+  await page.goto("/");
+
+  const trigger = page.getByRole("button", { name: "Acessibilidade" });
+  await expect(trigger).toBeVisible();
+  await trigger.click();
+
+  const panel = page.getByRole("dialog", { name: "Acessibilidade" });
+  await expect(panel).toBeVisible();
+  await expect(panel.getByRole("heading", { name: "Acessibilidade" })).toBeFocused();
+  await scan(page, testInfo, "painel-acessibilidade");
+
+  await panel.getByRole("button", { name: "Aumentar tamanho da fonte" }).click();
+  await panel.getByRole("button", { name: "Diminuir brilho" }).click();
+  await panel.getByRole("button", { name: "Aumentar contraste" }).click();
+  await panel.getByLabel("Perfil de cores").selectOption("deuteranopia");
+  await panel.getByLabel("Espaçamento confortável").check();
+  await panel.getByLabel("Sublinhado em todos os links").check();
+  await panel.getByLabel("Reduzir animações").check();
+  await panel.getByLabel("Usar fonte simples").check();
+
+  await expect(page.locator("html")).toHaveAttribute("style", /font-size: 110%/);
+  await expect(page.locator("html")).toHaveAttribute("data-a11y-color-vision", "deuteranopia");
+  await expect(page.locator("html")).toHaveAttribute("data-a11y-comfortable-spacing", "true");
+  await expect(page.locator("html")).toHaveAttribute("data-a11y-underline-links", "true");
+  await expect(page.locator("html")).toHaveAttribute("data-a11y-reduce-motion", "true");
+  await expect(page.locator("html")).toHaveAttribute("data-a11y-simple-font", "true");
+  await expect(panel.locator('[role="status"][aria-live="polite"]')).toContainText("Fonte simples ativada.");
+  await expect.poll(() => page.evaluate(() => ({
+    brightness: getComputedStyle(document.documentElement).getPropertyValue("--a11y-brightness").trim(),
+    contrast: getComputedStyle(document.documentElement).getPropertyValue("--a11y-contrast").trim(),
+  }))).toEqual({ brightness: "0.9", contrast: "1.1" });
+
+  await page.keyboard.press("Escape");
+  await expect(panel).toBeHidden();
+  await expect(trigger).toBeFocused();
+
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Acessibilidade" })).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("data-a11y-color-vision", "deuteranopia");
+  await expect(page.locator("html")).toHaveAttribute("style", /font-size: 110%/);
+
+  await page.goto("/dashboard");
+  await expect(page.getByRole("heading", { level: 1, name: "Clubes do livro" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Acessibilidade" })).toBeVisible();
+  await page.getByRole("button", { name: "Acessibilidade" }).click();
+  await page.getByRole("button", { name: "Restaurar padrão" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-a11y-color-vision", "default");
+  await expect(page.locator("html")).toHaveAttribute("style", /font-size: 100%/);
+});
+
 test.describe("T03–T09 — rotas autenticadas", () => {
   test.beforeEach(async ({ page }) => mockApi(page));
 

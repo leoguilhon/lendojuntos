@@ -11,27 +11,31 @@ import { ProfilePage } from "../pages/ProfilePage";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { AppLayout } from "../components/AppLayout";
 import { RouteAccessibility, SkipLink } from "../components/RouteAccessibility";
+import { AccessibilityMenu } from "../components/AccessibilityMenu";
 
 export function AppRoutes() {
   return (
     <BrowserRouter>
       <SkipLink />
       <RouteAccessibility />
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route element={<ProtectedRoute />}>
-          <Route element={<AppLayout />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/clubs/:id" element={<ClubDetailsPage />} />
-            <Route path="/clubs/:id/books" element={<ClubBooksPage />} />
-            <Route path="/books/:id" element={<BookDetailsPage />} />
-            <Route path="/clubs/:id/meetings" element={<MeetingsPage />} />
-            <Route path="/clubs/:id/meetings/:meetingId" element={<MeetingDetailsPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+      <div className="accessibility-visual-layer">
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/clubs/:id" element={<ClubDetailsPage />} />
+              <Route path="/clubs/:id/books" element={<ClubBooksPage />} />
+              <Route path="/books/:id" element={<BookDetailsPage />} />
+              <Route path="/clubs/:id/meetings" element={<MeetingsPage />} />
+              <Route path="/clubs/:id/meetings/:meetingId" element={<MeetingDetailsPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
           </Route>
-        </Route>
-      </Routes>
+        </Routes>
+      </div>
+      <AccessibilityMenu />
     </BrowserRouter>
   );
 }

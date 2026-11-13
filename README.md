@@ -155,6 +155,9 @@ python -m py_compile app\main.py
 - Semana 10 — roteiro reproduzível de validação e capturas: [docs/semana-10-validar-cartoes-estados.mjs](docs/semana-10-validar-cartoes-estados.mjs)
 - Semana 11 — feedback, prevenção de erro e automação de acessibilidade: [docs/semana-11-feedback-automacao.md](docs/semana-11-feedback-automacao.md)
 - Semana 11 — suíte Playwright + axe reproduzível: [frontend/tests/a11y.spec.ts](frontend/tests/a11y.spec.ts)
+- Cronograma revisado — aditivo das Semanas 12 a 14: [docs/cronograma-acessibilidade-revisado.md](docs/cronograma-acessibilidade-revisado.md)
+- Semana 12 — painel global de acessibilidade: [docs/semana-12-painel-acessibilidade.md](docs/semana-12-painel-acessibilidade.md)
+- Semana 12 — guia de recursos acessíveis: [docs/guia-recursos-acessiveis.md](docs/guia-recursos-acessiveis.md)
 - Documentacao tecnica detalhada: [docs/documentacao-tecnica.md](docs/documentacao-tecnica.md)
 
 ## Limitacoes do MVP
